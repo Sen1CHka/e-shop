@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve selling-frontend --configuration=production",
-    "build": "nx build selling-frontend --verbose --configuration=production"
+    "start": "nx serve selling-frontend",
+    "build": "nx build selling-frontend"
   },
   "private": true,
   "dependencies": {
