@@ -7,6 +7,7 @@ import cz.cvut.fit.tjv.repositary.UserRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Service
@@ -29,5 +30,10 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long> implements Or
     @Override
     public Collection<Order> readAllByAuthor(String userId) {
         return orderRepository.findByClientUsername(userId);
+    }
+
+    @Override
+    public Collection<Order> readAllByDate(LocalDateTime date) {
+        return orderRepository.findByDate(date);
     }
 }

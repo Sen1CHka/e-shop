@@ -1,8 +1,10 @@
 package cz.cvut.fit.tjv.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -13,7 +15,21 @@ public class User implements EntityWithId<String>{
     private String email;
     private String password;
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private Collection<Order> orders;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.username.hashCode();
+    }
 
     @Override
     public String getId() {

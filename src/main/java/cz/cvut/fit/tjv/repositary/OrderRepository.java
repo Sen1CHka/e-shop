@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends CrudRepository<Order, Long> {
 
     Collection<Order> findByClientUsername(String userId);
-    Collection<Order> findByData(LocalDateTime data);
+    Collection<Order> findByDate(LocalDateTime date);
 }

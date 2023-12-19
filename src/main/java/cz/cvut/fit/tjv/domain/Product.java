@@ -1,6 +1,8 @@
 package cz.cvut.fit.tjv.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -15,8 +17,13 @@ public class Product implements EntityWithId<Long>{
     private String discription;
     private Double price;
     private Long avaliableAmount;
-    @ManyToMany(mappedBy = "products")
-    private Collection<Order> orders;
+    @ManyToMany
+    @JoinTable(
+            name = "product_in_order",
+            joinColumns = @JoinColumn(name = "orders_with_product"),
+            inverseJoinColumns = @JoinColumn(name = "product_in_order")
+    )
+    private final Collection<Order> orders = new ArrayList<>();
 
     @Override
     public Long getId() {
