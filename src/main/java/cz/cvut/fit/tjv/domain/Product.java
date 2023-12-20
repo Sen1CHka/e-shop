@@ -14,7 +14,7 @@ public class Product implements EntityWithId<Long>{
     @GeneratedValue
     private Long id;
     private String name;
-    private String discription;
+    private String description;
     private Double price;
     private Long avaliableAmount;
     @ManyToMany
@@ -42,11 +42,11 @@ public class Product implements EntityWithId<Long>{
     }
 
     public String getDiscription() {
-        return discription;
+        return description;
     }
 
     public void setDiscription(String discription) {
-        this.discription = discription;
+        this.description = discription;
     }
 
     public Double getPrice() {
