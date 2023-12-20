@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@selling-frontend/button": ["libs/shared/button/src/index.ts"],
-      "@selling-frontend/home": ["libs/selling/home/src/index.ts"],
-      "@selling-frontend/shell": ["libs/selling/shell/src/index.ts"]
+      "@selling-frontend/domain": ["libs/domain/src/index.ts"],
+      "@selling-frontend/selling": ["libs/selling/src/index.ts"],
+      "@selling-frontend/shared": ["libs/shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

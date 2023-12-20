@@ -1,0 +1,12 @@
+<selling-table [columnDefinitions]="ordersColumnsDefinition" [data]="(data$ | async)!">
+</selling-table>
+
+<selling-dialog [isVisible]="(isDialogVisible$ | async)!" (closeDialogEvent)="closeDialog($event)" [contentTemplate]="dialogContent"></selling-dialog>
+
+<ng-template #dialogContent>
+  <selling-table
+    [columnDefinitions]="productsColumnsDefinition"
+    [data]="products"
+  >
+  </selling-table>
+</ng-template>

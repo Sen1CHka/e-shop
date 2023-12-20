@@ -1,0 +1,9 @@
+.navigator{
+    background-color: #333;
+    margin: 0;
+    padding: 0.75em 4em;
+
+    & > selling-button:not(:last-child){
+        margin-right: 3em;
+    }
+}
