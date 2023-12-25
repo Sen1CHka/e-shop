@@ -14,5 +14,4 @@ public class User {
     private String username;
     private String realName;
     private String email;
-    private Collection<Order> orders;
 }
