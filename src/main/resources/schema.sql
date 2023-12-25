@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS products (
     name VARCHAR(256) NOT NULL,
     description TEXT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    available_amount INTEGER NOT NULL
+    avaliable_amount INTEGER NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS product_in_orders (
