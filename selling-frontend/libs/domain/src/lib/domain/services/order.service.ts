@@ -4,15 +4,15 @@ import { BaseHttpService } from "./baseHttp.service";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root"
 })
 export class OrderService extends BaseHttpService<Order>{
 
-    constructor(readonly client: HttpClient){
-        super(client);
-    }
+    constructor(override readonly http: HttpClient) {
+        super(http);
+      }
 
     override get entityName(): string {
-        return "Order";
+        return "order";
     }
 }
