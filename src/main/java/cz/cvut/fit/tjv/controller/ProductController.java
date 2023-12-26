@@ -5,13 +5,17 @@ import cz.cvut.fit.tjv.domain.User;
 import cz.cvut.fit.tjv.service.ProductService;
 import cz.cvut.fit.tjv.service.ProductServiceImpl;
 import cz.cvut.fit.tjv.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/product")
 public class ProductController {
     private ProductService productService;
 
+    @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -20,5 +24,35 @@ public class ProductController {
     public Iterable<Product> readAll() {
         return productService.readAll();
     }
+    @PostMapping("/create")
+    public Product create(@RequestBody Product product) {
+        return productService.create(product);
+    }
 
+    @PutMapping("/update")
+    public Product update(@RequestBody Product newProduct, @PathVariable Long id)
+    {
+        return productService.readById(id).map(prod -> {
+            prod.setName(newProduct.getName());
+            prod.setDescription(newProduct.getDescription());
+            prod.setPrice(prod.getPrice());
+            prod.setAvaliableAmount(newProduct.getAvaliableAmount());
+            return productService.save(newProduct);
+        }).orElseGet(() -> {
+            newProduct.setId(id);
+            return productService.save(newProduct);
+        });
+    }
+
+    @GetMapping("/lesspr")
+    public Collection<Product> readAllByLessPrice(@RequestParam Double price)
+    {
+        return productService.findByPrice(price);
+    }
+
+    @GetMapping("/expaver")
+    public Collection<Product> readAllExpensiveThanAverage()
+    {
+        return productService.findExpensiveThanAverage();
+    }
 }

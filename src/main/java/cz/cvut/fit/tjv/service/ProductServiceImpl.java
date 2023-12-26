@@ -5,6 +5,8 @@ import cz.cvut.fit.tjv.repositary.ProductRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+
 
 @Component
 public class ProductServiceImpl extends CrudServiceImpl<Product, Long> implements ProductService{
@@ -17,5 +19,15 @@ public class ProductServiceImpl extends CrudServiceImpl<Product, Long> implement
     @Override
     protected CrudRepository<Product, Long> getRepository() {
         return productRepository;
+    }
+
+    @Override
+    public Collection<Product> findByPrice(Double price) {
+        return productRepository.findByPrice(price);
+    }
+
+    @Override
+    public Collection<Product> findExpensiveThanAverage() {
+        return productRepository.findExpensiveThanAverage();
     }
 }

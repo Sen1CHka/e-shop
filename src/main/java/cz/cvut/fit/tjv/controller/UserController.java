@@ -2,6 +2,7 @@ package cz.cvut.fit.tjv.controller;
 
 import cz.cvut.fit.tjv.domain.User;
 import cz.cvut.fit.tjv.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -17,9 +19,6 @@ public class UserController {
     public Iterable<User> readAll() {
         return userService.readAll();
     }
-    @PostMapping
-    public User create(@RequestBody User user) {
-        return userService.create(user);
-    }
+
 }
 

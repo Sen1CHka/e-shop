@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS orders (
     id_order SERIAL PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES users,
+    username VARCHAR(50) NOT NULL REFERENCES users,
     date DATE NOT NULL,
     state VARCHAR(20) NOT NULL
 );

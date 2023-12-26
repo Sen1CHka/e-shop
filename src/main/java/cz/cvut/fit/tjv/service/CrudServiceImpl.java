@@ -15,6 +15,14 @@ public abstract class CrudServiceImpl<T extends EntityWithId<ID>, ID> implements
     }
 
     @Override
+    public T save(T e) {
+        if (getRepository().existsById(e.getId()))
+            throw new IllegalArgumentException();
+
+        return getRepository().save(e);
+    }
+
+    @Override
     public Optional<T> readById(ID id) {
         return getRepository().findById(id);
     }

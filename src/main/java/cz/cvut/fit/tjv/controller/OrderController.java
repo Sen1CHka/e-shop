@@ -32,4 +32,10 @@ public class OrderController {
     public Collection<Order> readAllByDate(@RequestParam LocalDateTime date) {
         return orderService.readAllByDate(date);
     }
+
+    @PostMapping("/create")
+    public Order create(@RequestBody Order order) {
+        return orderService.create(order);
+    }
+
 }

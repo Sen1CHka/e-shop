@@ -41,11 +41,11 @@ public class Product implements EntityWithId<Long>{
         this.name = name;
     }
 
-    public String getDiscription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDiscription(String discription) {
+    public void setDescription(String discription) {
         this.description = discription;
     }
 
