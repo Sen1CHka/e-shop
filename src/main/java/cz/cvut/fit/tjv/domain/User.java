@@ -10,12 +10,15 @@ import java.util.Objects;
 @Table(name = "users")
 public class User implements EntityWithId<String>{
     @Id
-    private String username = "";
+    private String username;
+
     private String realName;
+
     private String email;
+
     private String password;
-    @OneToMany(mappedBy = "client")
-    @JsonIgnore
+
+    @OneToMany(mappedBy = "user")
     private Collection<Order> orders;
 
     @Override

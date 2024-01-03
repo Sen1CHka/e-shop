@@ -1,6 +1,6 @@
 package cz.cvut.fit.tjv.domain;
 
-public enum State {
+public enum OrderState {
     PROCESSED,
     SENT,
     DELIVERED,

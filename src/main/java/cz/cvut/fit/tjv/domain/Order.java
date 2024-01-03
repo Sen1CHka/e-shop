@@ -1,6 +1,5 @@
 package cz.cvut.fit.tjv.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -15,17 +14,22 @@ public class Order implements EntityWithId<Long> {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "client_id")
-    private User client;
-
-    @ManyToMany(mappedBy = "orders")
-    private Collection<Product> products;
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private User user;
 
     private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private OrderState state;
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_in_orders",
+            joinColumns = @JoinColumn(name = "orders_with_product"),
+            inverseJoinColumns = @JoinColumn(name = "product_in_order")
+    )
+    private Collection<Product> products;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,12 +52,12 @@ public class Order implements EntityWithId<Long> {
         this.id = id;
     }
 
-    public User getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
-    public void setClient(User client) {
-        this.client = client;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Collection<Product> getProducts() {
@@ -72,11 +76,11 @@ public class Order implements EntityWithId<Long> {
         this.date = date;
     }
 
-    public State getState() {
+    public OrderState getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(OrderState state) {
         this.state = state;
     }
 }

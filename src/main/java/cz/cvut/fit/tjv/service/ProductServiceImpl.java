@@ -1,5 +1,6 @@
 package cz.cvut.fit.tjv.service;
 
+import cz.cvut.fit.tjv.contracts.ProductDTO;
 import cz.cvut.fit.tjv.domain.Product;
 import cz.cvut.fit.tjv.repositary.ProductRepository;
 import org.springframework.data.repository.CrudRepository;
@@ -29,5 +30,17 @@ public class ProductServiceImpl extends CrudServiceImpl<Product, Long> implement
     @Override
     public Collection<Product> findExpensiveThanAverage() {
         return productRepository.findExpensiveThanAverage();
+    }
+
+    public static ProductDTO convertProductToDto(Product product)
+    {
+        if(product==null) return new ProductDTO();
+        return new ProductDTO(
+                product.getId().intValue(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getAvailableAmount().intValue()
+        );
     }
 }

@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/product")
+@CrossOrigin
+@RequestMapping("/api/product")
 public class ProductController {
     private ProductService productService;
 
@@ -36,7 +37,7 @@ public class ProductController {
             prod.setName(newProduct.getName());
             prod.setDescription(newProduct.getDescription());
             prod.setPrice(prod.getPrice());
-            prod.setAvaliableAmount(newProduct.getAvaliableAmount());
+            prod.setAvailableAmount(newProduct.getAvailableAmount());
             return productService.save(newProduct);
         }).orElseGet(() -> {
             newProduct.setId(id);
