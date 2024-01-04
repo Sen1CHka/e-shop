@@ -7,6 +7,6 @@ export interface Order {
     userName: string;
     state: string;
     totalPrice: number;
-    createdDate: Date;
+    date: Date;
     products: Product[];
 }

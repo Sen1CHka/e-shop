@@ -1,13 +1,12 @@
 package cz.cvut.fit.tjv.service;
 
-import cz.cvut.fit.tjv.contracts.UserDTO;
-import cz.cvut.fit.tjv.domain.User;
-import cz.cvut.fit.tjv.repositary.UserRepository;
+import cz.cvut.fit.tjv.contracts.User;
+import cz.cvut.fit.tjv.repository.UserRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserServiceImpl extends CrudServiceImpl<User, String> implements UserService{
+public class UserServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.User, String> implements UserService{
 
 
     private UserRepository userRepository;
@@ -17,13 +16,18 @@ public class UserServiceImpl extends CrudServiceImpl<User, String> implements Us
     }
 
     @Override
-    protected CrudRepository<User, String> getRepository() {
+    protected CrudRepository<cz.cvut.fit.tjv.domain.User, String> getRepository() {
         return userRepository;
     }
 
-    public static UserDTO convertUserToDto(User user)
+    public static User convertUserToDto(cz.cvut.fit.tjv.domain.User user)
     {
-        if(user == null) return new UserDTO();
-        return new UserDTO(user.getUsername(), user.getRealName(), user.getEmail());
+        if(user == null) return new User();
+        return new User(user.getUsername(), user.getRealName(), user.getEmail());
+    }
+
+    @Override
+    public cz.cvut.fit.tjv.domain.User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

@@ -1,15 +1,19 @@
 package cz.cvut.fit.tjv.controller;
 
-import cz.cvut.fit.tjv.contracts.OrderDTO;
-import cz.cvut.fit.tjv.domain.Order;
+import cz.cvut.fit.tjv.contracts.Order;
+import cz.cvut.fit.tjv.contracts.OrderEdit;
 import cz.cvut.fit.tjv.service.OrderService;
 import cz.cvut.fit.tjv.service.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -26,30 +30,42 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        List<Order> orders = StreamSupport.stream(orderService.readAll().spliterator(), false)
+    public ResponseEntity<Collection<Order>> getAllOrders() {
+        List<cz.cvut.fit.tjv.domain.Order> orders = StreamSupport.stream(orderService.readAll().spliterator(), false)
                 .toList();
 
-        List<OrderDTO> orderDTOs = orders.stream()
+        List<Order> orderDTOs = orders.stream()
                 .map(OrderServiceImpl::convertOrderToDto)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(orderDTOs);
     }
 
-    @GetMapping("/byAuthor")
-    public Collection<Order> readAllByAuthor(@RequestParam String userId) {
-        return orderService.readAllByAuthor(userId);
+    @GetMapping("/byauthor")
+    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Order>> readAllByAuthor(@RequestParam String userId) {
+        return ResponseEntity.ok(orderService.getAllByAuthor(userId).stream()
+                .map(OrderServiceImpl::convertOrderToDto)
+                .toList());
     }
 
-    @GetMapping("/byDate")
-    public Collection<Order> readAllByDate(@RequestParam LocalDateTime date) {
-        return orderService.readAllByDate(date);
+    @GetMapping("/bydate")
+    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Order>> readAllByDate(@RequestParam String date) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateTime = formatter.parse(date);
+        LocalDateTime localDateTime = dateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        System.out.println(dateTime);
+        System.out.println(localDateTime);
+        return ResponseEntity.ok(orderService.getByDateBefore(localDateTime).stream()
+                .map(OrderServiceImpl::convertOrderToDto)
+                .toList());
     }
 
-    @PostMapping("/create")
-    public Order create(@RequestBody Order order) {
-        return orderService.create(order);
+    @PostMapping
+    public ResponseEntity<cz.cvut.fit.tjv.domain.Order> create(@RequestBody OrderEdit order) {
+        cz.cvut.fit.tjv.domain.Order newOrder = OrderServiceImpl.convertEditToOrder(order);
+        return ResponseEntity.ok(orderService.create(newOrder));
     }
+
+
 
 
 }

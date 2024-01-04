@@ -12,7 +12,7 @@ export class KeyOrFunctionPipe implements PipeTransform {
         }
         else if (typeof keyOrFn === 'string') {
             const value = row[keyOrFn];
-            if (value){
+            if (value !== null && value !== undefined){
                 return value;
             }
         }

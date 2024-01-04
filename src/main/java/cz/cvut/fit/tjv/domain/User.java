@@ -1,5 +1,6 @@
 package cz.cvut.fit.tjv.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -18,6 +19,8 @@ public class User implements EntityWithId<String>{
 
     private String password;
 
+    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Collection<Order> orders;
 

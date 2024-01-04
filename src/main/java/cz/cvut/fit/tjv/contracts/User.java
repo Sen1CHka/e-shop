@@ -1,15 +1,15 @@
 package cz.cvut.fit.tjv.contracts;
 
-public class UserDTO {
+public class User {
 
     private String username;
     private String realName;
     private String email;
 
-    public UserDTO() {
+    public User() {
     }
 
-    public UserDTO(String username, String realName, String email) {
+    public User(String username, String realName, String email) {
         this.username = username;
         this.realName = realName;
         this.email = email;

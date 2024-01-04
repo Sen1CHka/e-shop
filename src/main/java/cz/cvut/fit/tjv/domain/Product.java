@@ -1,6 +1,8 @@
 package cz.cvut.fit.tjv.domain;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,15 +18,14 @@ public class Product implements EntityWithId<Long>{
 
     private String name;
 
-
     private String description;
-
 
     private Double price;
 
+    private Integer availableAmount;
 
-    private Long availableAmount;
-
+    @JsonBackReference
+    @JsonIgnore
     @ManyToMany(mappedBy = "products")
     private Collection<Order> orders;
 
@@ -60,11 +61,11 @@ public class Product implements EntityWithId<Long>{
         this.price = price;
     }
 
-    public Long getAvailableAmount() {
+    public Integer getAvailableAmount() {
         return availableAmount;
     }
 
-    public void setAvailableAmount(Long availableAmount) {
+    public void setAvailableAmount(Integer availableAmount) {
         this.availableAmount = availableAmount;
     }
 

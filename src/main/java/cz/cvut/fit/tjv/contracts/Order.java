@@ -1,32 +1,40 @@
 package cz.cvut.fit.tjv.contracts;
 
-import cz.cvut.fit.tjv.domain.Product;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public class OrderDTO {
+public class Order {
 
     private Integer id;
 
-
     private String username;
 
-    private Collection<ProductDTO> products;
+    private Collection<Product> products;
 
     private LocalDateTime date;
 
     private String state;
 
-    public OrderDTO() {
+    private Double totalPrice;
+
+    public Order() {
     }
 
-    public OrderDTO(Integer id, String username, Collection<ProductDTO> products, LocalDateTime date, String state) {
+    public Order(Integer id, String username, Collection<Product> products, LocalDateTime date, String state, Double totalPrice) {
         this.id = id;
         this.username = username;
         this.products = products;
         this.date = date;
         this.state = state;
+        this.totalPrice = totalPrice;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public Integer getId() {
@@ -38,19 +46,19 @@ public class OrderDTO {
     }
 
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUserName(String userName) {
+    public void setUsername(String userName) {
         this.username = userName;
     }
 
-    public Collection<ProductDTO> getProducts() {
+    public Collection<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(Collection<ProductDTO> products) {
+    public void setProducts(Collection<Product> products) {
         this.products = products;
     }
 

@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS orders (
     id_order SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL REFERENCES users,
     date DATE NOT NULL,
-    state VARCHAR(20) NOT NULL
+    state VARCHAR(20) NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS products (

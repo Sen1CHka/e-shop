@@ -5,6 +5,6 @@ import java.util.Collection;
 
 
 public interface ProductService extends CrudService<Product, Long>{
-    Collection<Product> findByPrice(Double price);
-    Collection<Product> findExpensiveThanAverage();
+    Collection<Product> getLessPrice(Double price);
+    Collection<Product> getExpensiveThanAverage();
 }

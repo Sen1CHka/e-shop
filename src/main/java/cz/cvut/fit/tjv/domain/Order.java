@@ -1,6 +1,10 @@
 package cz.cvut.fit.tjv.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -13,6 +17,7 @@ public class Order implements EntityWithId<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private User user;
@@ -29,6 +34,18 @@ public class Order implements EntityWithId<Long> {
             inverseJoinColumns = @JoinColumn(name = "product_in_order")
     )
     private Collection<Product> products;
+
+    private Double totalPrice;
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = BigDecimal.valueOf(totalPrice)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -82,5 +99,15 @@ public class Order implements EntityWithId<Long> {
 
     public void setState(OrderState state) {
         this.state = state;
+    }
+
+    public void calculateTotalPrice() {
+        if (products != null && !products.isEmpty()) {
+            totalPrice = products.stream()
+                    .mapToDouble(Product::getPrice)
+                    .sum();
+        } else {
+            totalPrice = 0.0;
+        }
     }
 }

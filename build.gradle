@@ -7,8 +7,8 @@ plugins {
 group = 'cz.cvut.fit.tjv'
 version = '1.0-SNAPSHOT'
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_18
+targetCompatibility = JavaVersion.VERSION_18
 
 
 repositories {
@@ -22,4 +22,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+}
+test {
+    useJUnitPlatform()
 }

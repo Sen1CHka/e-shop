@@ -1,6 +1,6 @@
 INSERT INTO users
 VALUES
-    ('user123', 'John Doe', 'john.doe@example.com', 'hashed_password_1');
+    ('user123', 'john.doe@example.com', 'password_123', 'John Doe');
 
 
 INSERT INTO products (id,name, description, price, available_amount) VALUES

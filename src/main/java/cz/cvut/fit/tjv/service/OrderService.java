@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface OrderService extends CrudService<Order, Long>{
-    Collection<Order> readAllByAuthor(String userId);
-
-    Collection<Order> readAllByDate(LocalDateTime date);
+    Collection<Order> getAllByAuthor(String userId);
+    Collection<Order> getByDateBefore(LocalDateTime date);
 }

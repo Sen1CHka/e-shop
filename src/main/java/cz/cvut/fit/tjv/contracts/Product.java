@@ -1,27 +1,27 @@
 package cz.cvut.fit.tjv.contracts;
 
-public class ProductDTO {
-    private Integer id;
+public class Product {
+    private Long id;
     private String name;
     private String description;
     private Double price;
-    private Integer avaliableAmount;
+    private Integer availableAmount;
 
-    public ProductDTO() {
+    public Product() {
     }
-    public ProductDTO(Integer id, String name, String description, Double price, Integer avaliableAmount) {
+    public Product(Long id, String name, String description, Double price, Integer availableAmount) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.avaliableAmount = avaliableAmount;
+        this.availableAmount = availableAmount;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -49,11 +49,11 @@ public class ProductDTO {
         this.price = price;
     }
 
-    public Integer getAvaliableAmount() {
-        return avaliableAmount;
+    public Integer getAvailableAmount() {
+        return availableAmount;
     }
 
-    public void setAvaliableAmount(Integer avaliableAmount) {
-        this.avaliableAmount = avaliableAmount;
+    public void setAvailableAmount(Integer avaliableAmount) {
+        this.availableAmount = avaliableAmount;
     }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SellingButtonComponent, SellingDialogComponent, SellingTableComponent } from '@selling-frontend/shared';
-import { ColumnsDefinition, Order, OrderService } from '@selling-frontend/domain';
+import { ColumnsDefinition, Order, OrderService, Product } from '@selling-frontend/domain';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { getOrdersColumnsDefinition, getProductsColumnsDefinition } from './selling-orders.columns-definition';
 
@@ -15,45 +15,22 @@ import { getOrdersColumnsDefinition, getProductsColumnsDefinition } from './sell
 })
 export class SellingOrdersComponent implements OnInit{
 
+  private readonly orderService = inject(OrderService);
+
   isDialogVisible$ = new BehaviorSubject(false);
-
-  constructor(private readonly orderService: OrderService){}
-
-  
-  // mockOrder: Order = {
-  //   id: 1,
-  //   name: 'Order #12345',
-  //   userId: 'user123',
-  //   userName: 'John Doe',
-  //   state: 'Pending',
-  //   totalPrice: 150.99,
-  //   createdDate: new Date('2023-01-01T10:30:00'),
-  //   products: [
-  //     { id: 101, name: 'Product A', description: 'Description_1', price: 50.99, amount: 1 },
-  //     { id: 102, name: 'Product B', description: 'Description_2', price: 30.50, amount: 2 },
-  //     { id: 103, name: 'Product C', description: 'Description_3', price: 69.50, amount: 3 },
-  //   ],
-  // };
-
-  data?: Order[];
-
-  // products = [
-  //   { id: 101, name: 'Product A', description: 'Description_1', price: 50.99, amount: 1 },
-  //   { id: 102, name: 'Product B', description: 'Description_2', price: 30.50, amount: 2 },
-  //   { id: 103, name: 'Product C', description: 'Description_3', price: 69.50, amount: 3 },
-  // ];
+  currentOrderProducts$ = new BehaviorSubject<Product[]>([]);
+  data$?: Observable<Order[]>;
 
   ordersColumnsDefinition!: ColumnsDefinition[];
   productsColumnsDefinition!: ColumnsDefinition[];
 
-  //constructor(private readonly orderService: OrderService){ }
 
   ngOnInit(): void {
-    this.orderService.getAll().subscribe((orders) => this.data = orders);
-    debugger;
+    this.data$ = this.orderService.getAll();
     this.ordersColumnsDefinition = getOrdersColumnsDefinition({
-      makeDialogVisible: () => {
+      makeDialogVisible: (row: Order) => {
         this.isDialogVisible$.next(!this.isDialogVisible$.value);
+        this.currentOrderProducts$.next(row.products);
       }
     });
     this.productsColumnsDefinition = getProductsColumnsDefinition();
@@ -63,3 +40,4 @@ export class SellingOrdersComponent implements OnInit{
     this.isDialogVisible$.next(value);
   }
 }
+

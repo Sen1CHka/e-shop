@@ -1,10 +1,6 @@
 package cz.cvut.fit.tjv.controller;
 
-import cz.cvut.fit.tjv.contracts.OrderDTO;
-import cz.cvut.fit.tjv.contracts.UserDTO;
-import cz.cvut.fit.tjv.domain.Order;
-import cz.cvut.fit.tjv.domain.User;
-import cz.cvut.fit.tjv.service.OrderServiceImpl;
+import cz.cvut.fit.tjv.contracts.User;
 import cz.cvut.fit.tjv.service.UserService;
 import cz.cvut.fit.tjv.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +23,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllOrders() {
-        List<User> orders = StreamSupport.stream(userService.readAll().spliterator(), false)
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<cz.cvut.fit.tjv.domain.User> orders = StreamSupport.stream(userService.readAll().spliterator(), false)
                 .toList();
 
-        List<UserDTO> orderDTOs = orders.stream()
+        List<User> orderDTOs = orders.stream()
                 .map(UserServiceImpl::convertUserToDto)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(orderDTOs);
     }
 

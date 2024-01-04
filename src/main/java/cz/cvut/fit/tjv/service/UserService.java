@@ -5,4 +5,5 @@ import org.springframework.stereotype.Component;
 
 
 public interface UserService extends CrudService<User, String>{
+    User getUserByUsername(String username);
 }

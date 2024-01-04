@@ -1,14 +1,19 @@
 package cz.cvut.fit.tjv.controller;
 
-import cz.cvut.fit.tjv.domain.Product;
-import cz.cvut.fit.tjv.domain.User;
+import cz.cvut.fit.tjv.contracts.Order;
+import cz.cvut.fit.tjv.contracts.Product;
+import cz.cvut.fit.tjv.contracts.ProductEdit;
+import cz.cvut.fit.tjv.service.OrderServiceImpl;
 import cz.cvut.fit.tjv.service.ProductService;
 import cz.cvut.fit.tjv.service.ProductServiceImpl;
-import cz.cvut.fit.tjv.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @CrossOrigin
@@ -22,38 +27,41 @@ public class ProductController {
     }
 
     @GetMapping
-    public Iterable<Product> readAll() {
-        return productService.readAll();
+    public ResponseEntity<Collection<Product>> getAllProducts() {
+        List<cz.cvut.fit.tjv.domain.Product> orders = StreamSupport.stream(productService.readAll().spliterator(), false)
+                .toList();
+
+        List<Product> productDTOs = orders.stream()
+                .map(ProductServiceImpl::convertProductToDto)
+                .toList();
+        return ResponseEntity.ok(productDTOs);
     }
-    @PostMapping("/create")
-    public Product create(@RequestBody Product product) {
-        return productService.create(product);
+    @PostMapping
+    public ResponseEntity<cz.cvut.fit.tjv.domain.Product> create(@RequestBody ProductEdit product) {
+        cz.cvut.fit.tjv.domain.Product newProduct = ProductServiceImpl.convertDtoToProduct(product);
+        return ResponseEntity.ok(productService.create(newProduct));
     }
 
     @PutMapping("/update")
-    public Product update(@RequestBody Product newProduct, @PathVariable Long id)
+    public cz.cvut.fit.tjv.domain.Product update(@RequestBody cz.cvut.fit.tjv.contracts.Product newProduct, @PathVariable Long id)
     {
-        return productService.readById(id).map(prod -> {
-            prod.setName(newProduct.getName());
-            prod.setDescription(newProduct.getDescription());
-            prod.setPrice(prod.getPrice());
-            prod.setAvailableAmount(newProduct.getAvailableAmount());
-            return productService.save(newProduct);
-        }).orElseGet(() -> {
-            newProduct.setId(id);
-            return productService.save(newProduct);
-        });
+        //UPDATE
+       return null;
     }
 
     @GetMapping("/lesspr")
-    public Collection<Product> readAllByLessPrice(@RequestParam Double price)
+    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Product>> readAllByLessPrice(@RequestParam Double price)
     {
-        return productService.findByPrice(price);
+        return ResponseEntity.ok(productService.getLessPrice(price).stream()
+                .map(ProductServiceImpl::convertProductToDto)
+                .toList());
     }
 
     @GetMapping("/expaver")
-    public Collection<Product> readAllExpensiveThanAverage()
+    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Product>> readAllExpensiveThanAverage()
     {
-        return productService.findExpensiveThanAverage();
+        return ResponseEntity.ok(productService.getExpensiveThanAverage().stream()
+                .map(ProductServiceImpl::convertProductToDto)
+                .collect(Collectors.toList()));
     }
 }
