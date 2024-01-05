@@ -2,13 +2,16 @@ package cz.cvut.fit.tjv.service;
 
 import cz.cvut.fit.tjv.contracts.User;
 import cz.cvut.fit.tjv.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class UserServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.User, String> implements UserService{
 
 
+    @Autowired
     private UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {

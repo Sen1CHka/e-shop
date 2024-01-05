@@ -8,20 +8,27 @@ import cz.cvut.fit.tjv.domain.User;
 import cz.cvut.fit.tjv.repository.OrderRepository;
 import cz.cvut.fit.tjv.repository.ProductRepository;
 import cz.cvut.fit.tjv.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Order, Long> implements OrderService {
+
+    @Autowired
     private OrderRepository orderRepository;
+    @Autowired
     private static UserRepository userRepository;
+    @Autowired
     private static ProductRepository productRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository) {
@@ -45,6 +52,18 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
         return orderRepository.findByDateBefore(date);
     }
 
+    @Transactional
+    public boolean removeProductFromOrder(Long orderId, Long productId) {
+        Optional<cz.cvut.fit.tjv.domain.Order> orderOptional = orderRepository.findById(orderId);
+
+        if (orderOptional.isPresent()) {
+            cz.cvut.fit.tjv.domain.Order order = orderOptional.get();
+            order.deleteProductById(productId);
+            orderRepository.save(order);
+            return true;
+        }
+        return false;
+    }
 
     public static Order convertOrderToDto(cz.cvut.fit.tjv.domain.Order order) {
         if (order == null || order.getUser() == null) return new Order();

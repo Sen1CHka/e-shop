@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 
 @Entity
@@ -108,6 +109,19 @@ public class Order implements EntityWithId<Long> {
                     .sum();
         } else {
             totalPrice = 0.0;
+        }
+    }
+    public void deleteProductById(Long id)
+    {
+        if(products!=null)
+        {
+            for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
+                Product product = iterator.next();
+                if (product.getId().equals(id)) {
+                    iterator.remove();
+                    break;
+                }
+            }
         }
     }
 }

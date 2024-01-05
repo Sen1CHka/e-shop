@@ -3,6 +3,9 @@ import { Product } from "../models";
 import { BaseHttpService } from "./baseHttp.service";
 import { HttpClient } from "@angular/common/http";
 
+@Injectable({
+    providedIn: "root"
+})
 @Injectable()
 export class ProductService extends BaseHttpService<Product>{
 
@@ -11,6 +14,6 @@ export class ProductService extends BaseHttpService<Product>{
     }
 
     override get entityName(): string {
-        return "Product";
+        return "product";
     }
 }

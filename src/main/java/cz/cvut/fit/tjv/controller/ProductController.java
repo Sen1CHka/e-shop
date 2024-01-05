@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Product>> getAllProducts() {
+    public ResponseEntity<?> getAllProducts() {
         List<cz.cvut.fit.tjv.domain.Product> orders = StreamSupport.stream(productService.readAll().spliterator(), false)
                 .toList();
 
@@ -37,20 +37,20 @@ public class ProductController {
         return ResponseEntity.ok(productDTOs);
     }
     @PostMapping
-    public ResponseEntity<cz.cvut.fit.tjv.domain.Product> create(@RequestBody ProductEdit product) {
+    public ResponseEntity<?> create(@RequestBody ProductEdit product) {
         cz.cvut.fit.tjv.domain.Product newProduct = ProductServiceImpl.convertDtoToProduct(product);
         return ResponseEntity.ok(productService.create(newProduct));
     }
 
     @PutMapping("/update")
-    public cz.cvut.fit.tjv.domain.Product update(@RequestBody cz.cvut.fit.tjv.contracts.Product newProduct, @PathVariable Long id)
+    public ResponseEntity<?> update(@RequestBody cz.cvut.fit.tjv.contracts.Product newProduct, @PathVariable Long id)
     {
         //UPDATE
        return null;
     }
 
     @GetMapping("/lesspr")
-    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Product>> readAllByLessPrice(@RequestParam Double price)
+    public ResponseEntity<?> readAllByLessPrice(@RequestParam Double price)
     {
         return ResponseEntity.ok(productService.getLessPrice(price).stream()
                 .map(ProductServiceImpl::convertProductToDto)
@@ -58,10 +58,17 @@ public class ProductController {
     }
 
     @GetMapping("/expaver")
-    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Product>> readAllExpensiveThanAverage()
+    public ResponseEntity<?> readAllExpensiveThanAverage()
     {
         return ResponseEntity.ok(productService.getExpensiveThanAverage().stream()
                 .map(ProductServiceImpl::convertProductToDto)
                 .collect(Collectors.toList()));
     }
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> delete(@PathVariable Long id)
+//    {
+//        productService.removeProductFromOrders(id);
+//        return ResponseEntity.ok().build();
+//    }
 }

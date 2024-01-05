@@ -17,4 +17,6 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
     Collection<Order> findByUserUsername(String username);
     @Query(" SELECT o FROM Order o WHERE o.date < :date")
     Collection<Order> findByDateBefore(@Param("date") LocalDateTime date);
+
+
 }

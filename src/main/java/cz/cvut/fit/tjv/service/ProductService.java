@@ -7,4 +7,5 @@ import java.util.Collection;
 public interface ProductService extends CrudService<Product, Long>{
     Collection<Product> getLessPrice(Double price);
     Collection<Product> getExpensiveThanAverage();
+
 }

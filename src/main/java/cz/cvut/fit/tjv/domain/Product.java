@@ -29,6 +29,14 @@ public class Product implements EntityWithId<Long>{
     @ManyToMany(mappedBy = "products")
     private Collection<Order> orders;
 
+    public Collection<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Collection<Order> orders) {
+        this.orders = orders;
+    }
+
     @Override
     public Long getId() {
         return id;
