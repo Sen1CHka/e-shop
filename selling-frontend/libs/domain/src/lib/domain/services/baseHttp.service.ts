@@ -27,4 +27,8 @@ export abstract class BaseHttpService<T> {
     update(id: number, entity: T): Observable<number> {
         return this.http.put<number>(`${this.basePath}/${id}`, entity);
     }
+
+    delete(id: number): Observable<number> {
+        return this.http.delete<number>(`${this.basePath}/${id}`);
+    }
 }
