@@ -29,11 +29,6 @@ public abstract class CrudServiceImpl<T extends EntityWithId<ID>, ID> implements
     }
 
     @Override
-    public void update(ID id, T e) {
-
-    }
-
-    @Override
     public void deleteById(ID id) {
         if(!getRepository().findById(id).isPresent()) throw new RuntimeException("Id does not exist");
         getRepository().deleteById(id);

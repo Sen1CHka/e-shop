@@ -4,7 +4,7 @@ import { Component, Input, OnInit, inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Product, ProductService } from "@selling-frontend/domain";
 import { SellingButtonComponent, SellingDialogComponent } from '@selling-frontend/shared';
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, take } from "rxjs";
 
 @Component({
     selector: 'selling-product-form',
@@ -27,22 +27,22 @@ export class ProductFormComponent implements OnInit {
     }
 
     saveProduct(){
-        if(this.product?.id){
-            return this.productService.update(this.product?.id, this.mapToProduct());
+        if(this.product?.id || this.product?.id === 0){
+            return this.productService.update(this.product?.id, this.mapToProduct()).pipe(take(1)).subscribe();
         }
-        return this.productService.create(this.mapToProduct());
+        return this.productService.create(this.mapToProduct()).pipe(take(1)).subscribe();
     }
 
     closeDialog(){
-
+        this.isDialogVisible$.next(false);
     }
 
     private createFormGroup(): FormGroup {
         const formGroup = new FormGroup({
-            name: new FormControl(this.product?.name, Validators.required),
-            description: new FormControl(this.product?.description, Validators.required),
-            price: new FormControl(this.product?.price, Validators.required),
-            availableAmount: new FormControl(this.product?.availableAmount, Validators.required),
+            name: new FormControl(this.product?.name ?? null, Validators.required),
+            description: new FormControl(this.product?.description ?? null, Validators.required),
+            price: new FormControl(this.product?.price ?? null, Validators.required),
+            availableAmount: new FormControl(this.product?.availableAmount ?? null, Validators.required),
         });
         return formGroup;
     }

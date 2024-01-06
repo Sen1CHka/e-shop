@@ -6,21 +6,27 @@
 
 <ng-template #dialogContent>
   <div [formGroup]="formGroup">
-    <div formControlName="name">
-      <input type="text" />
+    <div>
+      <label for="name">Name</label>
+      <input type="text" formControlName="name" />
     </div>
-    <div formControlName="description">
-      <input type="text" />
+    <div>
+      <label for="description">Description</label>
+      <input type="text" formControlName="description" />
     </div>
-    <div formControlName="price">
-      <input type="number" />
+    <div>
+      <label for="price">Price</label>
+      <input type="number" formControlName="price" />
     </div>
-    <div formControlName="availableAmount">
-      <input type="number" />
+    <div>
+      <label for="availableAmount">AvailableAmount</label>
+      <input type="number" formControlName="availableAmount" />
     </div>
     <selling-button
       [buttonLabel]="'Save product'"
       (click)="saveProduct()"
+      [disabled]="formGroup.invalid"
     ></selling-button>
   </div>
 </ng-template>
+

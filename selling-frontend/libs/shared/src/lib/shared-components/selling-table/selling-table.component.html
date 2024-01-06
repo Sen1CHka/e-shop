@@ -13,7 +13,7 @@
           <td *ngFor="let column of columnDefinitions">
             {{ column.value ? (column.value | keyOrFn : row) : '' }}
             <div>
-              <selling-button *ngFor="let action of column?.columnAction" [buttonLabel]="action.label" (click)="action?.onClick(row)">
+              <selling-button class="mr-3" *ngFor="let action of column?.columnAction" [buttonLabel]="action.label" (click)="action?.onClick(row)">
               </selling-button>
             </div>
           </td>

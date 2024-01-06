@@ -95,4 +95,8 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
         return order;
     }
 
+    @Override
+    public cz.cvut.fit.tjv.domain.Order update(Long aLong, cz.cvut.fit.tjv.domain.Order e) {
+        return null;
+    }
 }

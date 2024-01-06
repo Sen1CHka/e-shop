@@ -7,7 +7,7 @@ public interface CrudService<T, ID> {
     T save(T e);
     Optional<T> readById(ID id);
     Iterable<T> readAll();
-    void update(ID id, T e);
+    T update(ID id, T e);
     void deleteById(ID id);
 }
 

@@ -8,10 +8,10 @@ export const sellingProductsRoutes: Route[] = [
   },
   {
     path: '*',
-    redirectTo: 'home'
+    redirectTo: ''
   },
   {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: ''
   },
 ];

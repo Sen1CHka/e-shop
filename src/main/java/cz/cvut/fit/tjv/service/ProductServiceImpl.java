@@ -44,20 +44,35 @@ public class ProductServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.P
         return productRepository.findExpensiveThanAverage();
     }
     @Transactional
-    public void removeProductFromOrders(Long productId) {
+    public Long removeProductFromOrders(Long productId) {
         Optional<cz.cvut.fit.tjv.domain.Product> productOpt = productRepository.findById(productId);
 
         if (productOpt.isPresent()) {
             cz.cvut.fit.tjv.domain.Product product = productOpt.get();
             Collection<Order> orders = product.getOrders();
-
             if (orders != null) {
                 for (Order order : orders) {
-                    order.getProducts().remove(product);
-                    if(order!=null)orderRepository.save(order);
+                    order.deleteProductById(productId);
                 }
             }
         }
+        productRepository.deleteById(productId);
+        return productId;
+    }
+
+    @Override
+    public cz.cvut.fit.tjv.domain.Product update(Long id, cz.cvut.fit.tjv.domain.Product newProduct)
+    {
+        if(productRepository.findById(id).isEmpty()) throw new RuntimeException("Product dont found!");
+
+        cz.cvut.fit.tjv.domain.Product product = productRepository.findById(id).get();
+
+        if(!newProduct.getName().isEmpty())product.setName(newProduct.getName());
+        if(!newProduct.getDescription().isEmpty())product.setDescription(newProduct.getDescription());
+        if(!(newProduct.getPrice()==null))product.setPrice(newProduct.getPrice());
+        if(!(newProduct.getAvailableAmount()==null))product.setAvailableAmount(newProduct.getAvailableAmount());
+        productRepository.save(product);
+        return product;
     }
 
 
@@ -73,7 +88,7 @@ public class ProductServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.P
         );
     }
 
-    public static cz.cvut.fit.tjv.domain.Product convertDtoToProduct(ProductEdit product)
+    public cz.cvut.fit.tjv.domain.Product convertDtoToProduct(ProductEdit product)
     {
         cz.cvut.fit.tjv.domain.Product newProduct = new cz.cvut.fit.tjv.domain.Product();
         newProduct.setName(product.getName());

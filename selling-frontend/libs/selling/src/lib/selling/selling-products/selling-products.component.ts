@@ -16,7 +16,7 @@ import {
   Product,
   ProductService,
 } from '@selling-frontend/domain';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, take } from 'rxjs';
 import { getProductsColumnsDefinition } from './selling-products.columns-definition';
 import { ProductFormComponent } from '../selling-home/components';
 
@@ -28,7 +28,7 @@ import { ProductFormComponent } from '../selling-home/components';
     SellingButtonComponent,
     SellingTableComponent,
     SellingDialogComponent,
-    ProductFormComponent
+    ProductFormComponent,
   ],
   templateUrl: './selling-products.component.html',
   styleUrl: './selling-products.component.scss',
@@ -60,8 +60,11 @@ export class SellingProductsComponent implements OnInit {
   }
 
   private deleteProduct(row: Product) {
-    if (row.id) {
-      this.productService.delete(row.id);
+    if (row.id || row.id === 0) {
+      this.productService
+        .delete(row.id)
+        .pipe(take(1))
+        .subscribe();
     }
   }
 }

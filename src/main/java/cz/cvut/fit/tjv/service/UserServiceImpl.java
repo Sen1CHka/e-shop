@@ -33,4 +33,9 @@ public class UserServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.User
     public cz.cvut.fit.tjv.domain.User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
+    @Override
+    public cz.cvut.fit.tjv.domain.User update(String s, cz.cvut.fit.tjv.domain.User e) {
+        return null;
+    }
 }
