@@ -1,0 +1,26 @@
+<selling-dialog
+  [isVisible]="(isDialogVisible$ | async)!"
+  (closeDialogEvent)="closeDialog()"
+  [contentTemplate]="dialogContent"
+></selling-dialog>
+
+<ng-template #dialogContent>
+  <div [formGroup]="formGroup">
+    <div formControlName="name">
+      <input type="text" />
+    </div>
+    <div formControlName="description">
+      <input type="text" />
+    </div>
+    <div formControlName="price">
+      <input type="number" />
+    </div>
+    <div formControlName="availableAmount">
+      <input type="number" />
+    </div>
+    <selling-button
+      [buttonLabel]="'Save product'"
+      (click)="saveProduct()"
+    ></selling-button>
+  </div>
+</ng-template>

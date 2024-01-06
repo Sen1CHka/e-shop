@@ -1,36 +1,41 @@
-import { ColumnsDefinition, Product } from "@selling-frontend/domain";
+import { ColumnsDefinition, Product } from '@selling-frontend/domain';
 
-export function getProductsColumnsDefinition() : ColumnsDefinition[]{
-    return [
+export function getProductsColumnsDefinition(defs: {
+  deleteProduct: (row: Product) => void;
+  updateProduct: (row: Product) => void;
+}): ColumnsDefinition[] {
+  return [
+    {
+      headerName: 'Id',
+      value: 'id',
+    },
+    {
+      headerName: 'Name',
+      value: 'name',
+    },
+    {
+      headerName: 'Description',
+      value: 'description',
+    },
+    {
+      headerName: 'Price',
+      value: 'price',
+    },
+    {
+      headerName: 'Amount',
+      value: 'availableAmount',
+    },
+    {
+      columnAction: [
         {
-            headerName: 'Id',
-            value: 'id',
+          label: 'Edit',
+          onClick: defs.updateProduct,
         },
         {
-            headerName: 'Name',
-            value: 'name',
+          label: 'Delete',
+          onClick: defs.deleteProduct,
         },
-        {
-            headerName: 'Description',
-            value: 'description',
-        },
-        {
-            headerName: 'Price',
-            value: 'price',
-        },
-        {
-            headerName: 'Amount',
-            value: 'availableAmount',
-        },
-        {
-            columnAction: [{
-                label: 'Edit'
-            }]
-        },
-        {
-            columnAction: [{
-                label: 'Delete'
-            }]
-        }
-    ];
+      ],
+    },
+  ];
 }

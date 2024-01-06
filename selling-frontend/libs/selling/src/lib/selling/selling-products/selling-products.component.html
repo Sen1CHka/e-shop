@@ -1,2 +1,13 @@
-<selling-table [columnDefinitions]="productsColumnsDefinition" [data]="(data$ | async)!">
+<selling-table
+  [columnDefinitions]="productsColumnsDefinition"
+  [data]="(data$ | async)!"
+>
 </selling-table>
+<selling-button
+  [buttonLabel]="'Create Product'"
+  (click)="isEditDialogVisible$.next(true)"
+></selling-button>
+<selling-product-form
+  [product]="(currentEditableProduct$ | async)!"
+  [isDialogVisible$]="isEditDialogVisible$"
+></selling-product-form>

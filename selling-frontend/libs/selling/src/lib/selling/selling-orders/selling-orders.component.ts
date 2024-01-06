@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { SellingButtonComponent, SellingDialogComponent, SellingTableComponent } from '@selling-frontend/shared';
 import { ColumnsDefinition, Order, OrderService, Product } from '@selling-frontend/domain';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { getOrdersColumnsDefinition, getProductsColumnsDefinition } from './selling-orders.columns-definition';
 
 @Component({
