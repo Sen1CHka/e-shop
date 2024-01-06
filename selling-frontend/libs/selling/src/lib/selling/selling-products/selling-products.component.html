@@ -4,6 +4,6 @@
 >
 </selling-table>
 <selling-product-form
-  [product]="(currentEditableProduct$ | async)!"
+  [product]="currentEditableProduct$.value"
   [isDialogVisible$]="isEditDialogVisible$"
 ></selling-product-form>

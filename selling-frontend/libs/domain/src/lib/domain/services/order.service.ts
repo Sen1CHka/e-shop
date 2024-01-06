@@ -3,9 +3,7 @@ import { Order } from "../models";
 import { BaseHttpService } from "./baseHttp.service";
 import { HttpClient } from "@angular/common/http";
 
-@Injectable({
-    providedIn: "root"
-})
+@Injectable()
 export class OrderService extends BaseHttpService<Order>{
 
     constructor(override readonly http: HttpClient) {

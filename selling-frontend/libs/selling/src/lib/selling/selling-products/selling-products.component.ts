@@ -60,11 +60,13 @@ export class SellingProductsComponent implements OnInit {
   }
 
   private deleteProduct(row: Product) {
-    if (row.id || row.id === 0) {
+    if (row && row.id !== null && row.id !== undefined) {
       this.productService
         .delete(row.id)
         .pipe(take(1))
-        .subscribe();
+        .subscribe(() => {
+          this.data$ = this.productService.getAll();
+        });
     }
   }
 }

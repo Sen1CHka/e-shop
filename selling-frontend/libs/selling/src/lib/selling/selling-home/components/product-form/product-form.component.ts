@@ -27,8 +27,8 @@ export class ProductFormComponent implements OnInit {
     }
 
     saveProduct(){
-        if(this.product?.id || this.product?.id === 0){
-            return this.productService.update(this.product?.id, this.mapToProduct()).pipe(take(1)).subscribe();
+        if(this.product && this.product?.id !== null && this.product?.id !== undefined){
+            return this.productService.update(this.product.id, this.mapToProduct()).pipe(take(1)).subscribe();
         }
         return this.productService.create(this.mapToProduct()).pipe(take(1)).subscribe();
     }
