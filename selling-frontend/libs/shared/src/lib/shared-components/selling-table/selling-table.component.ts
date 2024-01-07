@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ColumnsDefinition, KeyOrFunctionPipe } from '@selling-frontend/domain';
 import { SellingButtonComponent } from '../selling-button';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'selling-table',
@@ -16,5 +17,5 @@ export class SellingTableComponent<T> {
   columnDefinitions!: ColumnsDefinition[];
 
   @Input()
-  data!: T[] | undefined;
+  data$!: Observable<T[]>;
 }

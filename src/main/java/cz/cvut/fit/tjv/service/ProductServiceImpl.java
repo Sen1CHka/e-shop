@@ -22,8 +22,6 @@ public class ProductServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.P
 
     @Autowired
     private static ProductRepository productRepository;
-    @Autowired
-    private static OrderRepository orderRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -40,11 +38,7 @@ public class ProductServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.P
     }
 
     @Override
-    public Collection<cz.cvut.fit.tjv.domain.Product> getExpensiveThanAverage() {
-        return productRepository.findExpensiveThanAverage();
-    }
-    @Transactional
-    public Long removeProductFromOrders(Long productId) {
+    public Long deleteById(Long productId) {
         Optional<cz.cvut.fit.tjv.domain.Product> productOpt = productRepository.findById(productId);
 
         if (productOpt.isPresent()) {

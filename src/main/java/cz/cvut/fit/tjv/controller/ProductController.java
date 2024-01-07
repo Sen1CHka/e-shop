@@ -40,14 +40,20 @@ public class ProductController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Product.class)))
     })
-    public ResponseEntity<?> getAllProducts() {
+    public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Double price) {
         List<cz.cvut.fit.tjv.domain.Product> orders = StreamSupport.stream(productService.readAll().spliterator(), false)
                 .toList();
 
-        List<Product> productDTOs = orders.stream()
+        List<Product> productDTOs = new java.util.ArrayList<>(orders.stream()
                 .map(ProductServiceImpl::convertProductToDto)
                 .sorted(Comparator.comparing(Product::getId))
+                .toList());
+        if(!(price ==null))
+        {
+            productDTOs = productService.getLessPrice(price).stream()
+                .map(ProductServiceImpl::convertProductToDto)
                 .toList();
+        }
         return ResponseEntity.ok(productDTOs);
     }
     @PostMapping
@@ -82,34 +88,6 @@ public class ProductController {
        return ResponseEntity.ok( productService.update(id, productService.convertDtoToProduct(newProduct)));
     }
 
-    @GetMapping("/lesspr")
-    @Operation(summary = "Get products by price", description = "Retrieves a list of products with a price less than the specified amount")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful retrieval of products",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class)))
-    })
-    public ResponseEntity<?> readAllByLessPrice(@RequestParam Double price)
-    {
-        return ResponseEntity.ok(productService.getLessPrice(price).stream()
-                .map(ProductServiceImpl::convertProductToDto)
-                .toList());
-    }
-
-    @GetMapping("/expaver")
-    @Operation(summary = "Get products more expensive than average", description = "Retrieves a list of products that are more expensive than the average price")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful retrieval of products",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class)))
-    })
-    public ResponseEntity<?> readAllExpensiveThanAverage()
-    {
-        return ResponseEntity.ok(productService.getExpensiveThanAverage().stream()
-                .map(ProductServiceImpl::convertProductToDto)
-                .collect(Collectors.toList()));
-    }
-
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a product", description = "Deletes a product with the specified ID")
     @ApiResponses(value = {
@@ -118,7 +96,7 @@ public class ProductController {
     })
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
-        return ResponseEntity.ok(productService.removeProductFromOrders(id));
+        return ResponseEntity.ok(productService.deleteById(id));
     }
 
 }

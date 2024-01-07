@@ -3,7 +3,7 @@ import { Product } from "../models";
 import { BaseHttpService } from "./baseHttp.service";
 import { HttpClient } from "@angular/common/http";
 
-@Injectable()
+@Injectable({providedIn:"root"})
 export class ProductService extends BaseHttpService<Product>{
 
     constructor(readonly client: HttpClient){

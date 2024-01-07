@@ -2,6 +2,7 @@ package cz.cvut.fit.tjv.controller;
 
 import cz.cvut.fit.tjv.contracts.Order;
 import cz.cvut.fit.tjv.contracts.OrderEdit;
+import cz.cvut.fit.tjv.domain.OrderState;
 import cz.cvut.fit.tjv.service.OrderService;
 import cz.cvut.fit.tjv.service.OrderServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,39 +42,32 @@ public class OrderController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Order.class)))
     })
-    public ResponseEntity<Collection<Order>> getAllOrders() {
+    public ResponseEntity<Collection<Order>> getAllOrders(@RequestParam(required = false) String userId,
+                                                          @RequestParam(required = false) String date) throws ParseException {
         List<cz.cvut.fit.tjv.domain.Order> orders = StreamSupport.stream(orderService.readAll().spliterator(), false)
                 .toList();
 
-        List<Order> orderDTOs = orders.stream()
+        List<Order> orderDTOs = new java.util.ArrayList<>(orders.stream()
                 .map(OrderServiceImpl::convertOrderToDto)
-                .toList();
+                .toList());
+
+        if(!(userId==null))
+        {
+            orderDTOs = orderService.getAllByAuthor(userId).stream()
+                    .map(OrderServiceImpl::convertOrderToDto)
+                    .toList();
+        }
+        if(!(date==null))
+        {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateTime = formatter.parse(date);
+            LocalDateTime localDateTime = dateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            orderDTOs = orderDTOs.stream()
+                    .filter(order -> order.getDate().isBefore(localDateTime))
+                    .toList();
+        }
+
         return ResponseEntity.ok(orderDTOs);
-    }
-
-    @GetMapping("/byauthor")
-    @Operation(summary = "Get orders by author", description = "Returns a list of orders filtered by author")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful retrieval",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class)))
-    })
-    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Order>> readAllByAuthor(@RequestParam String userId) {
-        return ResponseEntity.ok(orderService.getAllByAuthor(userId).stream()
-                .map(OrderServiceImpl::convertOrderToDto)
-                .toList());
-    }
-
-    @GetMapping("/bydate")
-    public ResponseEntity<Collection<cz.cvut.fit.tjv.contracts.Order>> readAllByDate(@RequestParam String date) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateTime = formatter.parse(date);
-        LocalDateTime localDateTime = dateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        System.out.println(dateTime);
-        System.out.println(localDateTime);
-        return ResponseEntity.ok(orderService.getByDateBefore(localDateTime).stream()
-                .map(OrderServiceImpl::convertOrderToDto)
-                .toList());
     }
 
     @PostMapping
@@ -96,7 +90,33 @@ public class OrderController {
     })
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
+        if(orderService.readById(id).isEmpty()) throw new RuntimeException("Order doesnt exist!");
+        Order order = OrderServiceImpl.convertOrderToDto(orderService.readById(id).get());
         orderService.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(order);
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update order state", description = "Updates the state of an order based on the provided ID and new state")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order state updated successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Order.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request - invalid state provided"),
+            @ApiResponse(responseCode = "404", description = "Order not found with the given ID")
+    })
+    public ResponseEntity<?> updateOrderState(@PathVariable Long id, @RequestParam String newState) {
+
+        OrderState state;
+        try {
+            state = OrderState.valueOf(newState.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        cz.cvut.fit.tjv.domain.Order updatedOrder = orderService.updateOrderState(id, state);
+        if (updatedOrder == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedOrder);
     }
 }

@@ -11,8 +11,6 @@ import java.util.Collection;
 @Repository
 public interface ProductRepository extends CrudRepository<Product,Long> {
 
-    @Query("select p from Product p where p.price < :price")
+    @Query("select p from Product p where p.price <= :price")
     Collection<Product> findLessPrice(@Param("price") Double price);
-    @Query("SELECT p FROM Product p WHERE p.price > (SELECT AVG(price) FROM Product )")
-    Collection<Product> findExpensiveThanAverage();
 }

@@ -10,6 +10,7 @@ import cz.cvut.fit.tjv.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -26,71 +27,52 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class OrderServiceImplUnitTest {
+    @Autowired
+    private OrderServiceImpl orderService;
+
     @MockBean
     private OrderRepository orderRepository;
 
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private ProductRepository productRepository;
-
-    @InjectMocks
-    private OrderServiceImpl orderService;
+    User user;
+    cz.cvut.fit.tjv.domain.Order order1;
+    cz.cvut.fit.tjv.domain.Order order2;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    public void readAllByAuthorTest() {
         String userId = "user123";
-        User user = new User();
+        user = new User();
         user.setUsername(userId);
 
-        cz.cvut.fit.tjv.domain.Order order1 = new cz.cvut.fit.tjv.domain.Order();
+        order1 = new cz.cvut.fit.tjv.domain.Order();
         order1.setId(0L);
         order1.setUser(user);
         order1.setProducts(List.of(new Product(),new Product(), new Product()));
         order1.setDate(LocalDateTime.now());
         order1.setState(OrderState.DELIVERED);
-        cz.cvut.fit.tjv.domain.Order order2= new cz.cvut.fit.tjv.domain.Order();
+        order2= new cz.cvut.fit.tjv.domain.Order();
         order2.setId(0L);
         order2.setUser(user);
         order2.setProducts(List.of(new Product()));
         order2.setDate(LocalDateTime.now());
         order2.setState(OrderState.SENT);
+    }
 
-        List<cz.cvut.fit.tjv.domain.Order> orders = new ArrayList<>(List.of(order1, order2));
+    @Test
+    public void readAllByAuthorTest() {
 
-        when(orderRepository.findByUserUsername(userId)).thenReturn(orders);
+        List<cz.cvut.fit.tjv.domain.Order> orders = List.of(order1, order2);
 
-        Collection<cz.cvut.fit.tjv.domain.Order> result = orderService.getAllByAuthor(userId);
+        when(orderRepository.findByUserUsername(user.getUsername())).thenReturn(orders);
 
-        verify(orderRepository).findByUserUsername(userId);
+        Collection<cz.cvut.fit.tjv.domain.Order> result = orderService.getAllByAuthor(user.getUsername());
+
+        verify(orderRepository).findByUserUsername(user.getUsername());
         assertEquals(orders, result);
     }
 
     @Test
     public void readAllByDateTest() {
         LocalDateTime date = LocalDateTime.now();
-        String userId = "user123";
-        User user = new User();
-        user.setUsername(userId);
-
-        cz.cvut.fit.tjv.domain.Order order1 = new cz.cvut.fit.tjv.domain.Order();
-        order1.setId(0L);
-        order1.setUser(user);
-        order1.setProducts(List.of(new Product(),new Product(), new Product()));
-        order1.setDate(LocalDateTime.now());
-        order1.setState(OrderState.DELIVERED);
-        cz.cvut.fit.tjv.domain.Order order2= new cz.cvut.fit.tjv.domain.Order();
-        order2.setId(0L);
-        order2.setUser(user);
-        order2.setProducts(List.of(new Product()));
-        order2.setDate(LocalDateTime.now());
-        order2.setState(OrderState.SENT);
 
         List<cz.cvut.fit.tjv.domain.Order> orders = new ArrayList<>(List.of(order1, order2));
 

@@ -13,8 +13,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,19 +50,6 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
         return orderRepository.findByDateBefore(date);
     }
 
-    @Transactional
-    public boolean removeProductFromOrder(Long orderId, Long productId) {
-        Optional<cz.cvut.fit.tjv.domain.Order> orderOptional = orderRepository.findById(orderId);
-
-        if (orderOptional.isPresent()) {
-            cz.cvut.fit.tjv.domain.Order order = orderOptional.get();
-            order.deleteProductById(productId);
-            orderRepository.save(order);
-            return true;
-        }
-        return false;
-    }
-
     public static Order convertOrderToDto(cz.cvut.fit.tjv.domain.Order order) {
         if (order == null || order.getUser() == null) return new Order();
         return new Order(
@@ -84,7 +69,7 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
 
         order.setDate(orderDTO.getDate());
         order.setState(OrderState.valueOf(orderDTO.getState()));
-        User user = userRepository.findByUsername("user123");
+        User user = userRepository.findById("user123").get();
         order.setUser(user);
         Collection<Product> products = new ArrayList<>();
         products = orderDTO.getProducts().stream()
@@ -94,6 +79,15 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
         order.calculateTotalPrice();
         return order;
     }
+    @Override
+    public cz.cvut.fit.tjv.domain.Order updateOrderState(Long id, OrderState newState) {
+        if(orderRepository.findById(id).isEmpty()) throw new RuntimeException("Order doesnt exist");
+        cz.cvut.fit.tjv.domain.Order order = orderRepository.findById(id).get();
+        order.setState(newState);
+        orderRepository.save(order);
+        return order;
+    }
+
 
     @Override
     public cz.cvut.fit.tjv.domain.Order update(Long aLong, cz.cvut.fit.tjv.domain.Order e) {

@@ -2,6 +2,7 @@ package cz.cvut.fit.tjv.controller;
 
 import cz.cvut.fit.tjv.contracts.Product;
 import cz.cvut.fit.tjv.contracts.User;
+import cz.cvut.fit.tjv.contracts.UserEdit;
 import cz.cvut.fit.tjv.service.UserService;
 import cz.cvut.fit.tjv.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,14 +36,56 @@ public class UserController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class)))
     })
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<?> getAllUsers() {
         List<cz.cvut.fit.tjv.domain.User> orders = StreamSupport.stream(userService.readAll().spliterator(), false)
                 .toList();
 
         List<User> orderDTOs = orders.stream()
-                .map(UserServiceImpl::convertUserToDto)
+                .map(userService::convertUserToDto)
                 .toList();
         return ResponseEntity.ok(orderDTOs);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a user", description = "Creates a new user with the given details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful creation of the user",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class)))
+    })
+    public ResponseEntity<?> createUser(@RequestBody UserEdit userDto) {
+        if(userService.readById(userDto.getUsername()).isPresent()) throw new RuntimeException("User with same username already exists");
+        cz.cvut.fit.tjv.domain.User user = userService.convertDtoToUser(userDto);
+        return ResponseEntity.ok(userService.create(user));
+    }
+
+    @PutMapping("/{username}")
+    @Operation(summary = "Update a user", description = "Updates the user details for the specified ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully updated",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody UserEdit userDto) {
+        if (userService.readById(username).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        cz.cvut.fit.tjv.domain.User user = userService.convertDtoToUser(userDto);
+        return ResponseEntity.ok(userService.update(username, user));
+    }
+
+    @DeleteMapping("/{username}")
+    @Operation(summary = "Delete a user", description = "Deletes a user with the specified ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<?> deleteUser(@PathVariable  String username) {
+        if (userService.readById(username).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userService.deleteById(username));
     }
 
 }

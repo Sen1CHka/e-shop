@@ -1,9 +1,10 @@
 <selling-table
   [columnDefinitions]="productsColumnsDefinition"
-  [data]="(data$ | async)!"
+  [data$]="data$"
 >
 </selling-table>
 <selling-product-form
   [product]="currentEditableProduct$.value"
   [isDialogVisible$]="isEditDialogVisible$"
+  (isProductSaved)="updateProducts($event)"
 ></selling-product-form>

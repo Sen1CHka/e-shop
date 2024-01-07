@@ -1,4 +1,5 @@
-<selling-dialog
+@if(isDialogVisible$ | async){
+  <selling-dialog
   [isVisible]="(isDialogVisible$ | async)!"
   (closeDialogEvent)="closeDialog()"
   [contentTemplate]="dialogContent"
@@ -30,3 +31,4 @@
   </div>
 </ng-template>
 
+}

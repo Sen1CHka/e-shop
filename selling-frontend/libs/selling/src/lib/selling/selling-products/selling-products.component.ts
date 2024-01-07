@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  ViewChild,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,7 +17,7 @@ import {
   Product,
   ProductService,
 } from '@selling-frontend/domain';
-import { BehaviorSubject, Observable, map, take } from 'rxjs';
+import { BehaviorSubject, Observable, map, switchMap, take } from 'rxjs';
 import { getProductsColumnsDefinition } from './selling-products.columns-definition';
 import { ProductFormComponent } from '../selling-home/components';
 
@@ -35,17 +36,17 @@ import { ProductFormComponent } from '../selling-home/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SellingProductsComponent implements OnInit {
-  private readonly productService = inject(ProductService);
 
+  private readonly productService = inject(ProductService);
+  
+  data$ = new BehaviorSubject<Product[]>([]);
   isDialogVisible$ = new BehaviorSubject(false);
   isEditDialogVisible$ = new BehaviorSubject(false);
   currentEditableProduct$ = new BehaviorSubject<Product | undefined>(undefined);
-
-  data$?: Observable<Product[]>;
   productsColumnsDefinition!: ColumnsDefinition[];
 
   ngOnInit(): void {
-    this.data$ = this.productService.getAll();
+    this.loadProducts();
     this.productsColumnsDefinition = getProductsColumnsDefinition({
       deleteProduct: (row: Product) => this.deleteProduct(row),
       updateProduct: (row: Product) => {
@@ -59,14 +60,23 @@ export class SellingProductsComponent implements OnInit {
     this.isDialogVisible$.next(value);
   }
 
+  updateProducts(isSaved: boolean) {
+    if (isSaved) {
+      this.loadProducts();
+    }
+  }
+
+  private loadProducts() {
+    this.productService.getAll().subscribe(
+      data => this.data$.next(data)
+    );
+  }
+
   private deleteProduct(row: Product) {
     if (row && row.id !== null && row.id !== undefined) {
       this.productService
         .delete(row.id)
-        .pipe(take(1))
-        .subscribe(() => {
-          this.data$ = this.productService.getAll();
-        });
+        .subscribe(() => this.updateProducts(true));
     }
   }
 }

@@ -1,13 +1,20 @@
-<selling-table [columnDefinitions]="ordersColumnsDefinition" [data]="(data$ | async)!">
+<selling-table
+  [columnDefinitions]="ordersColumnsDefinition"
+  [data$]="data$"
+>
 </selling-table>
 
-<selling-dialog [isVisible]="(isDialogVisible$ | async)!" (closeDialogEvent)="closeDialog($event)" [contentTemplate]="dialogContent"></selling-dialog>
+<selling-dialog
+  [isVisible]="(isDialogVisible$ | async)!"
+  (closeDialogEvent)="closeDialog($event)"
+  [contentTemplate]="dialogContent"
+></selling-dialog>
 
 <ng-template #dialogContent>
   <selling-table
     class="products-table"
     [columnDefinitions]="productsColumnsDefinition"
-    [data]="(currentOrderProducts$| async)!"
+    [data$]="currentOrderProducts$"
   >
   </selling-table>
 </ng-template>

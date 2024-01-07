@@ -28,6 +28,10 @@ export abstract class BaseHttpService<T> {
         return this.http.put<number>(`${this.basePath}/${id}`, entity);
     }
 
+    patch(id: number, property: object): Observable<number> {
+        return this.http.patch<number>(`${this.basePath}/${id}`, property);
+    }
+
     delete(id: number): Observable<number> {
         return this.http.delete<number>(`${this.basePath}/${id}`);
     }

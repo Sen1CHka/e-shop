@@ -12,7 +12,7 @@ import java.util.Objects;
 public class User implements EntityWithId<String>{
     @Id
     private String username;
-
+    @Column(name = "realname")
     private String realName;
 
     private String email;
@@ -25,19 +25,7 @@ public class User implements EntityWithId<String>{
     private Collection<Order> orders;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(username, user.username);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.username.hashCode();
-    }
-
-    @Override
+    @JsonIgnore
     public String getId() {
         return username;
     }
@@ -77,4 +65,16 @@ public class User implements EntityWithId<String>{
         return orders;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
 }

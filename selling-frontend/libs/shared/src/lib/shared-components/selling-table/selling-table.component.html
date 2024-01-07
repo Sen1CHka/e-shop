@@ -1,24 +1,22 @@
-@if(data){
-  <div class="p-3 table-container">
-    <table class="table table-responsive">
-      <thead class="thead">
-        <tr>
-          <th class="min-width-6" *ngFor="let header of columnDefinitions">
-            {{ header.headerName }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of data">
-          <td *ngFor="let column of columnDefinitions">
-            {{ column.value ? (column.value | keyOrFn : row) : '' }}
-            <div>
-              <selling-button class="mr-3" *ngFor="let action of column?.columnAction" [buttonLabel]="action.label" (click)="action?.onClick(row)">
-              </selling-button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-}
+<div class="p-3 table-container" *ngIf="data$ | async as data">
+  <table class="table table-responsive">
+    <thead class="thead">
+      <tr>
+        <th class="min-width-6" *ngFor="let header of columnDefinitions">
+          {{ header.headerName }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data">
+        <td *ngFor="let column of columnDefinitions">
+          {{ column.value ? (column.value | keyOrFn : row) : '' }}
+          <div>
+            <selling-button class="mr-3" *ngFor="let action of column?.columnAction" [buttonLabel]="action.label" (click)="action?.onClick(row)">
+            </selling-button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
