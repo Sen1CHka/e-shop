@@ -1,0 +1,15 @@
+<div class="d-flex">
+  <selling-button
+    [buttonLabel]="'Create User'"
+    (click)="createUsers()"
+  ></selling-button>
+</div>
+
+<selling-table [columnDefinitions]="usersColumnsDefinition" [data$]="data$">
+</selling-table>
+
+<selling-user-form
+  [user]="currentEditableUser$.value"
+  [isDialogVisible$]="isEditDialogVisible$"
+  (isUserSaved)="updateUsers($event)"
+></selling-user-form>

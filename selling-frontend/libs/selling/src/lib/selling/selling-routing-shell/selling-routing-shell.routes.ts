@@ -2,9 +2,9 @@ import { Route } from '@angular/router';
 
 export const sellingRoutingShellRoutes: Route[] = [
   {
-    path: 'home',
+    path: 'users',
     loadChildren: () =>
-      import('@selling-frontend/selling').then((c) => c.sellingHomeRoutes),
+      import('@selling-frontend/selling').then((c) => c.sellingUsersRoutes),
   },
   {
     path: 'orders',
