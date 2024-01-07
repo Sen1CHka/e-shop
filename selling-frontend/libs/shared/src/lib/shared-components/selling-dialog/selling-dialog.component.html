@@ -1,0 +1,15 @@
+<ng-container *ngIf="isVisible">
+  <div class="dialog-container">
+    <div class="dialog-content" *ngIf="contentTemplate">
+      <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+      <div class="w-100 d-flex justify-content-center">
+        <selling-button
+        [buttonLabel]="'Close'"
+        (click)="closeDialog()"
+      >
+      </selling-button>
+      </div>
+
+    </div>
+  </div>
+</ng-container>

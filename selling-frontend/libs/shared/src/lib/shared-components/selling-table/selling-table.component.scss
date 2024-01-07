@@ -1,0 +1,21 @@
+.table-responsive table th, .table-responsive table td {
+    background-color: transparent;
+    border-color: #125fcc31;
+}
+
+.table-container {
+    max-height: 600px;
+    overflow-y: scroll;
+    padding-top: 0 !important;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    margin: 0;
+    background: rgba(255, 255, 255);
+}
+
+.mr-3:not(:last-child){
+    margin-right: 1em;
+}

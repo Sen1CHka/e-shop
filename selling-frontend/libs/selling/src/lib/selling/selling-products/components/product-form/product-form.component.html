@@ -1,0 +1,34 @@
+@if(isDialogVisible$ | async){
+  <selling-dialog
+  [isVisible]="(isDialogVisible$ | async)!"
+  (closeDialogEvent)="closeDialog()"
+  [contentTemplate]="dialogContent"
+></selling-dialog>
+
+<ng-template #dialogContent>
+  <div [formGroup]="formGroup">
+    <div>
+      <label for="name">Name</label>
+      <input type="text" formControlName="name" />
+    </div>
+    <div>
+      <label for="description">Description</label>
+      <input type="text" formControlName="description" />
+    </div>
+    <div>
+      <label for="price">Price</label>
+      <input type="number" formControlName="price" />
+    </div>
+    <div>
+      <label for="availableAmount">AvailableAmount</label>
+      <input type="number" formControlName="availableAmount" />
+    </div>
+    <selling-button
+      [buttonLabel]="'Save product'"
+      (click)="saveProduct()"
+      [disabled]="formGroup.invalid"
+    ></selling-button>
+  </div>
+</ng-template>
+
+}

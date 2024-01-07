@@ -1,2 +1,6 @@
-<selling-frontend-nx-welcome></selling-frontend-nx-welcome>
+<nav class="navigator">
+    <selling-button [routerLink]="'users'" [buttonLabel]="'Users'"></selling-button>
+    <selling-button [routerLink]="'orders'" [buttonLabel]="'Orders'"></selling-button>
+    <selling-button [routerLink]="'products'" [buttonLabel]="'Products'"></selling-button>
+</nav>
 <router-outlet></router-outlet>

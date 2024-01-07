@@ -1,0 +1,31 @@
+<div class="d-flex">
+  <selling-order-filter (filterObject)="filterData($event)"></selling-order-filter>
+  <selling-button [buttonLabel]="'Create Order'" (click)="createOrders()"></selling-button>
+</div>
+
+<selling-table
+  [columnDefinitions]="ordersColumnsDefinition"
+  [data$]="data$"
+>
+</selling-table>
+
+<selling-dialog
+  [isVisible]="(isDialogVisible$ | async)!"
+  (closeDialogEvent)="closeDialog($event)"
+  [contentTemplate]="dialogContent"
+></selling-dialog>
+
+<selling-order-form
+  [order]="currentEditableOrder$.value"
+  [isDialogVisible$]="isEditDialogVisible$"
+  (isOrderSaved)="updateOrders($event)"
+></selling-order-form>
+
+<ng-template #dialogContent>
+  <selling-table
+    class="products-table"
+    [columnDefinitions]="productsColumnsDefinition"
+    [data$]="currentOrderProducts$"
+  >
+  </selling-table>
+</ng-template>

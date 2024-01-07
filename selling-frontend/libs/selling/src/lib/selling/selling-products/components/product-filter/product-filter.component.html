@@ -1,0 +1,10 @@
+<div [formGroup]="formGroup" class="d-flex">
+  <div>
+    <label for="price"></label>
+    <input type="number" formControlName="price"/>
+  </div>
+  <selling-button
+    [buttonLabel]="'Filter'"
+    (click)="filterProduct()"
+  ></selling-button>
+</div>

@@ -1,0 +1,44 @@
+@if(isDialogVisible$ | async){
+<selling-dialog
+  [isVisible]="(isDialogVisible$ | async)!"
+  (closeDialogEvent)="closeDialog()"
+  [contentTemplate]="dialogContent"
+></selling-dialog>
+
+<ng-template #dialogContent>
+  <div [formGroup]="formGroup">
+    <div>
+      <label for="state">State</label>
+      <ng-select
+        formControlName="state"
+        [multiple]="false"
+        [items]="stateList"
+        [bindLabel]="'name'"
+        [bindValue]="'id'"
+        [readonly]="!order"
+        [placeholder]="'Set state'"
+      >
+      </ng-select>
+    </div>
+    <div>
+      <label for="products">Products</label>
+      <ng-select
+        formControlName="products"
+        [items]="productList$ | async"
+        [multiple]="true"
+        [bindLabel]="'name'"
+        [bindValue]="'id'"
+        [readonly]="order !== null && order !== undefined"
+        [placeholder]="'Set products'"
+      >
+      </ng-select>
+    </div>
+    <selling-button
+      [buttonLabel]="'Save order'"
+      (click)="saveOrder()"
+      [disabled]="formGroup.invalid"
+    ></selling-button>
+  </div>
+</ng-template>
+
+}

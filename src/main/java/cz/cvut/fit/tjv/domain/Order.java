@@ -1,9 +1,13 @@
 package cz.cvut.fit.tjv.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 
 @Entity
@@ -14,18 +18,48 @@ public class Order implements EntityWithId<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonManagedReference
     @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "client_id")
-    private User client;
-
-    @ManyToMany(mappedBy = "orders")
-    private Collection<Product> products;
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private User user;
 
     private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private OrderState state;
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", user=" + user +
+                ", date=" + date +
+                ", state=" + state +
+                ", products=" + products.stream().map(Product::toString) +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_in_orders",
+            joinColumns = @JoinColumn(name = "orders_with_product"),
+            inverseJoinColumns = @JoinColumn(name = "product_in_order")
+    )
+    private Collection<Product> products;
+
+    private Double totalPrice;
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = BigDecimal.valueOf(totalPrice)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,12 +82,12 @@ public class Order implements EntityWithId<Long> {
         this.id = id;
     }
 
-    public User getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
-    public void setClient(User client) {
-        this.client = client;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Collection<Product> getProducts() {
@@ -72,11 +106,34 @@ public class Order implements EntityWithId<Long> {
         this.date = date;
     }
 
-    public State getState() {
+    public OrderState getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(OrderState state) {
         this.state = state;
+    }
+
+    public void calculateTotalPrice() {
+        if (products != null && !products.isEmpty()) {
+            totalPrice = products.stream()
+                    .mapToDouble(Product::getPrice)
+                    .sum();
+        } else {
+            totalPrice = 0.0;
+        }
+    }
+    public void deleteProductById(Long id)
+    {
+        if(products!=null)
+        {
+            for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
+                Product product = iterator.next();
+                if (product.getId().equals(id)) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
     }
 }

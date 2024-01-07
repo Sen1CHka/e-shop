@@ -1,9 +1,12 @@
 package cz.cvut.fit.tjv.domain;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 
 @Entity
@@ -11,19 +14,29 @@ import java.util.Collection;
 public class Product implements EntityWithId<Long>{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String description;
+
     private Double price;
-    private Long avaliableAmount;
-    @ManyToMany
-    @JoinTable(
-            name = "product_in_order",
-            joinColumns = @JoinColumn(name = "orders_with_product"),
-            inverseJoinColumns = @JoinColumn(name = "product_in_order")
-    )
-    private final Collection<Order> orders = new ArrayList<>();
+
+    private Integer availableAmount;
+
+    @JsonBackReference
+    @JsonIgnore
+    @ManyToMany(mappedBy = "products")
+    private Collection<Order> orders;
+
+    public Collection<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Collection<Order> orders) {
+        this.orders = orders;
+    }
 
     @Override
     public Long getId() {
@@ -41,11 +54,11 @@ public class Product implements EntityWithId<Long>{
         this.name = name;
     }
 
-    public String getDiscription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDiscription(String discription) {
+    public void setDescription(String discription) {
         this.description = discription;
     }
 
@@ -57,12 +70,36 @@ public class Product implements EntityWithId<Long>{
         this.price = price;
     }
 
-    public Long getAvaliableAmount() {
-        return avaliableAmount;
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", availableAmount=" + availableAmount +
+                '}';
     }
 
-    public void setAvaliableAmount(Long avaliableAmount) {
-        this.avaliableAmount = avaliableAmount;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public Integer getAvailableAmount() {
+        return availableAmount;
+    }
+
+    public void setAvailableAmount(Integer availableAmount) {
+        this.availableAmount = availableAmount;
     }
 
 }

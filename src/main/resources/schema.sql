@@ -7,9 +7,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS orders (
     id_order SERIAL PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES users,
+    username VARCHAR(50) NOT NULL REFERENCES users,
     date DATE NOT NULL,
-    state VARCHAR(20) NOT NULL
+    state VARCHAR(20) NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS products (
@@ -17,7 +18,7 @@ CREATE TABLE IF NOT EXISTS products (
     name VARCHAR(256) NOT NULL,
     description TEXT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    avaliable_amount INTEGER NOT NULL
+    available_amount INTEGER NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS product_in_orders (

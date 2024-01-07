@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@selling-frontend/domain": ["libs/domain/src/index.ts"],
+      "@selling-frontend/selling": ["libs/selling/src/index.ts"],
+      "@selling-frontend/shared": ["libs/shared/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

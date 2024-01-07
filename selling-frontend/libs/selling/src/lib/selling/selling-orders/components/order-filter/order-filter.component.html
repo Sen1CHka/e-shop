@@ -1,0 +1,10 @@
+<div [formGroup]="formGroup" class="d-flex">
+  <div>
+    <label for="date"></label>
+    <input type="date" formControlName="date"/>
+  </div>
+  <selling-button
+    [buttonLabel]="'Filter'"
+    (click)="filterProduct()"
+  ></selling-button>
+</div>

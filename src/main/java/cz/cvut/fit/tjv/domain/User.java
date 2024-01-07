@@ -1,5 +1,6 @@
 package cz.cvut.fit.tjv.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -10,28 +11,21 @@ import java.util.Objects;
 @Table(name = "users")
 public class User implements EntityWithId<String>{
     @Id
-    private String username = "";
+    private String username;
+    @Column(name = "realname")
     private String realName;
+
     private String email;
+
     private String password;
-    @OneToMany(mappedBy = "client")
+
+    @JsonBackReference
     @JsonIgnore
+    @OneToMany(mappedBy = "user")
     private Collection<Order> orders;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(username, user.username);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.username.hashCode();
-    }
-
-    @Override
+    @JsonIgnore
     public String getId() {
         return username;
     }
@@ -71,4 +65,16 @@ public class User implements EntityWithId<String>{
         return orders;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
 }

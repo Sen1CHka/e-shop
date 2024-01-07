@@ -8,9 +8,6 @@ import java.util.Optional;
 public abstract class CrudServiceImpl<T extends EntityWithId<ID>, ID> implements CrudService<T, ID> {
     @Override
     public T create(T e) {
-        if (getRepository().existsById(e.getId()))
-            throw new IllegalArgumentException();
-
         return getRepository().save(e);
     }
 
@@ -25,13 +22,10 @@ public abstract class CrudServiceImpl<T extends EntityWithId<ID>, ID> implements
     }
 
     @Override
-    public void update(ID id, T e) {
-
-    }
-
-    @Override
-    public void deleteById(ID id) {
+    public ID deleteById(ID id) {
+        if(!getRepository().findById(id).isPresent()) throw new RuntimeException("Id does not exist");
         getRepository().deleteById(id);
+        return id;
     }
 
     protected abstract CrudRepository<T, ID> getRepository();

@@ -1,0 +1,17 @@
+<div class="d-flex">
+  <selling-product-filter (filterObject)="filterData($event)">
+  </selling-product-filter>
+  <selling-button
+    [buttonLabel]="'Create Product'"
+    (click)="createProducts()"
+  ></selling-button>
+</div>
+
+<selling-table [columnDefinitions]="productsColumnsDefinition" [data$]="data$">
+</selling-table>
+
+<selling-product-form
+  [product]="currentEditableProduct$.value"
+  [isDialogVisible$]="isEditDialogVisible$"
+  (isProductSaved)="updateProducts($event)"
+></selling-product-form>

@@ -1,0 +1,24 @@
+.selling-button {
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    font-size: 15px;
+    transition: 0.2s;
+    width: var(--button-width);
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.primary-button {
+    background-color: transparent;
+    color: #ff7e47;
+    border: 2px solid #ff7e47;
+  
+    &:hover {
+      box-shadow:#ffac8975 0 0 0 3px;
+      cursor: pointer;
+    }
+  }
+  

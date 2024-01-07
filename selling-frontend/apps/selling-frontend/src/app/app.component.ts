@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
+import { SellingButtonComponent } from '@selling-frontend/shared';
 
 @Component({
   standalone: true,
-  imports: [NxWelcomeComponent, RouterModule],
+  imports: [RouterModule, SellingButtonComponent],
   selector: 'selling-frontend-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
