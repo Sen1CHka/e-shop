@@ -15,18 +15,29 @@ public class Order {
 
     private String state;
 
+    private Integer stateId;
+
     private Double totalPrice;
 
     public Order() {
     }
 
-    public Order(Integer id, String username, Collection<Product> products, LocalDateTime date, String state, Double totalPrice) {
+    public Order(Integer id, String username, Collection<Product> products, LocalDateTime date, String state, Integer stateId, Double totalPrice) {
         this.id = id;
         this.username = username;
         this.products = products;
         this.date = date;
         this.state = state;
+        this.stateId = stateId;
         this.totalPrice = totalPrice;
+    }
+
+    public Integer getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Integer stateId) {
+        this.stateId = stateId;
     }
 
     public Double getTotalPrice() {

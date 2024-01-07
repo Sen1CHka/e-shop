@@ -28,6 +28,18 @@ public class Order implements EntityWithId<Long> {
     @Enumerated(EnumType.STRING)
     private OrderState state;
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", user=" + user +
+                ", date=" + date +
+                ", state=" + state +
+                ", products=" + products.stream().map(Product::toString) +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
+
     @ManyToMany
     @JoinTable(
             name = "product_in_orders",

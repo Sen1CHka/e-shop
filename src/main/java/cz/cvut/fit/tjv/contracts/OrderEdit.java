@@ -1,21 +1,13 @@
 package cz.cvut.fit.tjv.contracts;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class OrderEdit {
     private Collection<Long> products;
+    private Integer state;
 
-    private LocalDateTime date;
-
-    private String state;
-
-    public OrderEdit() {
-    }
-
-    public OrderEdit(Collection<Long> products, LocalDateTime date, String state) {
+    public OrderEdit(Collection<Long> products, Integer state) {
         this.products = products;
-        this.date = date;
         this.state = state;
     }
 
@@ -27,19 +19,11 @@ public class OrderEdit {
         this.products = products;
     }
 
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public String getState() {
+    public Integer getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 }

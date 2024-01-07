@@ -105,18 +105,18 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Bad request - invalid state provided"),
             @ApiResponse(responseCode = "404", description = "Order not found with the given ID")
     })
-    public ResponseEntity<?> updateOrderState(@PathVariable Long id, @RequestParam String newState) {
+    public ResponseEntity<?> updateOrderState(@PathVariable Long id, @RequestParam Integer state) {
 
-        OrderState state;
         try {
-            state = OrderState.valueOf(newState.toUpperCase());
+
+            cz.cvut.fit.tjv.domain.Order updatedOrder = orderService.updateOrderState(id, OrderState.values()[state]);
+            if (updatedOrder == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updatedOrder);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
         }
-        cz.cvut.fit.tjv.domain.Order updatedOrder = orderService.updateOrderState(id, state);
-        if (updatedOrder == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedOrder);
+
     }
 }

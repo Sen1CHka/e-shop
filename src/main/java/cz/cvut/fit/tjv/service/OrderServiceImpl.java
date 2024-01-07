@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -52,6 +53,13 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
 
     public static Order convertOrderToDto(cz.cvut.fit.tjv.domain.Order order) {
         if (order == null || order.getUser() == null) return new Order();
+        Integer orderState = 0;
+        for (OrderState day : OrderState.values()) {
+            if (day.name().equalsIgnoreCase(order.getState().toString())) {
+                orderState = day.ordinal();
+            }
+        }
+
         return new Order(
                 order.getId().intValue(),
                 order.getUser().getUsername(),
@@ -60,6 +68,7 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
                         .collect(Collectors.toList()),
                 order.getDate(),
                 order.getState().toString(),
+                orderState,
                 order.getTotalPrice()
         );
     }
@@ -67,8 +76,8 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
     public static cz.cvut.fit.tjv.domain.Order convertEditToOrder(OrderEdit orderDTO) {
         cz.cvut.fit.tjv.domain.Order order = new cz.cvut.fit.tjv.domain.Order();
 
-        order.setDate(orderDTO.getDate());
-        order.setState(OrderState.valueOf(orderDTO.getState()));
+        order.setDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        order.setState(OrderState.values()[orderDTO.getState()]);
         User user = userRepository.findById("user123").get();
         order.setUser(user);
         Collection<Product> products = new ArrayList<>();
@@ -77,6 +86,9 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
                 .collect(Collectors.toList());
         order.setProducts(products);
         order.calculateTotalPrice();
+
+        System.out.println(order);
+
         return order;
     }
     @Override

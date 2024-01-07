@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  ViewChild,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,7 +18,7 @@ import {
 } from '@selling-frontend/domain';
 import { BehaviorSubject, Observable, map, switchMap, take } from 'rxjs';
 import { getProductsColumnsDefinition } from './selling-products.columns-definition';
-import { ProductFormComponent } from '../selling-home/components';
+import { ProductFilterComponent, ProductFormComponent } from './components';
 
 @Component({
   selector: 'selling-products',
@@ -30,6 +29,7 @@ import { ProductFormComponent } from '../selling-home/components';
     SellingTableComponent,
     SellingDialogComponent,
     ProductFormComponent,
+    ProductFilterComponent
   ],
   templateUrl: './selling-products.component.html',
   styleUrl: './selling-products.component.scss',
@@ -64,6 +64,17 @@ export class SellingProductsComponent implements OnInit {
     if (isSaved) {
       this.loadProducts();
     }
+  }
+
+  createProducts(){
+    this.isEditDialogVisible$.next(true);
+    this.currentEditableProduct$.next(undefined);
+  }
+
+  filterData(filterObject: any) {
+    this.productService.filterAll(filterObject).subscribe(
+      data => this.data$.next(data)
+    );
   }
 
   private loadProducts() {

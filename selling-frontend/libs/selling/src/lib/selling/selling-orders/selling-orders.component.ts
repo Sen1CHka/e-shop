@@ -1,20 +1,44 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SellingButtonComponent, SellingDialogComponent, SellingTableComponent } from '@selling-frontend/shared';
-import { ColumnsDefinition, Order, OrderService, Product } from '@selling-frontend/domain';
+import {
+  SellingButtonComponent,
+  SellingDialogComponent,
+  SellingTableComponent,
+} from '@selling-frontend/shared';
+import {
+  ColumnsDefinition,
+  Order,
+  OrderService,
+  Product,
+} from '@selling-frontend/domain';
 import { BehaviorSubject } from 'rxjs';
-import { getOrdersColumnsDefinition, getProductsColumnsDefinition } from './selling-orders.columns-definition';
+import {
+  getOrdersColumnsDefinition,
+  getProductsColumnsDefinition,
+} from './selling-orders.columns-definition';
+import { OrderFilterComponent, OrderFormComponent } from './components';
 
 @Component({
   selector: 'selling-orders',
   standalone: true,
-  imports: [CommonModule, SellingButtonComponent, SellingTableComponent, SellingDialogComponent],
+  imports: [
+    CommonModule,
+    SellingButtonComponent,
+    SellingTableComponent,
+    SellingDialogComponent,
+    OrderFormComponent,
+    OrderFilterComponent
+  ],
   templateUrl: './selling-orders.component.html',
   styleUrl: './selling-orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SellingOrdersComponent implements OnInit{
-
+export class SellingOrdersComponent implements OnInit {
   private readonly orderService = inject(OrderService);
 
   isDialogVisible$ = new BehaviorSubject(false);
@@ -25,7 +49,6 @@ export class SellingOrdersComponent implements OnInit{
 
   ordersColumnsDefinition!: ColumnsDefinition[];
   productsColumnsDefinition!: ColumnsDefinition[];
-
 
   ngOnInit(): void {
     this.loadOrders();
@@ -43,7 +66,7 @@ export class SellingOrdersComponent implements OnInit{
     this.productsColumnsDefinition = getProductsColumnsDefinition();
   }
 
-  closeDialog(value: boolean){
+  closeDialog(value: boolean) {
     this.isDialogVisible$.next(value);
   }
 
@@ -53,18 +76,24 @@ export class SellingOrdersComponent implements OnInit{
     }
   }
 
-  private loadOrders() {
-    this.orderService.getAll().subscribe(
+  createOrders() {
+    this.isEditDialogVisible$.next(true);
+    this.currentEditableOrder$.next(undefined);
+  }
+
+  filterData(filterObject: any) {
+    this.orderService.filterAll(filterObject).subscribe(
       data => this.data$.next(data)
     );
   }
 
+  private loadOrders() {
+    this.orderService.getAll().subscribe((data) => this.data$.next(data));
+  }
+
   private deleteOrder(row: Order) {
     if (row && row.id !== null && row.id !== undefined) {
-      this.orderService
-        .delete(row.id)
-        .subscribe(() => this.updateOrders(true));
+      this.orderService.delete(row.id).subscribe(() => this.updateOrders(true));
     }
   }
 }
-

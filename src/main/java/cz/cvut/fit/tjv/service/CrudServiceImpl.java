@@ -8,7 +8,6 @@ import java.util.Optional;
 public abstract class CrudServiceImpl<T extends EntityWithId<ID>, ID> implements CrudService<T, ID> {
     @Override
     public T create(T e) {
-        if(getRepository().findById(e.getId()).isPresent()) throw new RuntimeException("Id already exist");
         return getRepository().save(e);
     }
 
