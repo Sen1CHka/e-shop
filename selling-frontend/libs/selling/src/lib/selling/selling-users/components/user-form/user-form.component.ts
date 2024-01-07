@@ -83,8 +83,8 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   private createFormGroup(): FormGroup {
     const formGroup = new FormGroup({
-      realname: new FormControl(
-        this.user?.realname ?? null,
+      realName: new FormControl(
+        this.user?.realName ?? null,
         Validators.required
       ),
       username: new FormControl(
@@ -102,7 +102,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   private mapToUser(): User {
     return {
-      realname: this.formGroup.get('realname')?.value,
+      realName: this.formGroup.get('realName')?.value,
       username: this.formGroup.get('username')?.value,
       email: this.formGroup.get('email')?.value,
       password: this.formGroup.get('password')?.value,

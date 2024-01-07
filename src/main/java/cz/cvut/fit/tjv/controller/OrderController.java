@@ -51,13 +51,14 @@ public class OrderController {
                 .map(OrderServiceImpl::convertOrderToDto)
                 .toList());
 
-        if(!(userId==null))
+        System.out.println(date);
+        if(userId!=null)
         {
             orderDTOs = orderService.getAllByAuthor(userId).stream()
                     .map(OrderServiceImpl::convertOrderToDto)
                     .toList();
         }
-        if(!(date==null))
+        if(date!=null && !"null".equals(date))
         {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date dateTime = formatter.parse(date);

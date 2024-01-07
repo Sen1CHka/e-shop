@@ -21,7 +21,7 @@ export function getUserColumnsDefinition(defs: {
       columnAction: [
         {
           label: 'Edit',
-          onClick: defs.deleteUser,
+          onClick: defs.updateUser,
         },
         {
           label: 'Delete',

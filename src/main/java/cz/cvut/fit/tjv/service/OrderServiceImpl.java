@@ -78,7 +78,21 @@ public class OrderServiceImpl extends CrudServiceImpl<cz.cvut.fit.tjv.domain.Ord
 
         order.setDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         order.setState(OrderState.values()[orderDTO.getState()]);
-        User user = userRepository.findById("user123").get();
+        Optional<User> optionalUser = userRepository.findById("user123");
+        User user;
+        if(optionalUser.isEmpty())
+        {
+            user = new User();
+            user.setUsername("user123");
+            user.setRealName("Default User");
+            user.setEmail("defaultuser@fit.cz");
+            user.setPassword("password123");
+
+            userRepository.save(user);
+        }
+        else {
+            user = optionalUser.get();
+        }
         order.setUser(user);
         Collection<Product> products = new ArrayList<>();
         products = orderDTO.getProducts().stream()
