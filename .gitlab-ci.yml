@@ -7,7 +7,6 @@ stages:
 build:
   stage: build
   script:
-    - apk add --update openjdk17
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
     - chmod +x gradlew
     - ./gradlew build
