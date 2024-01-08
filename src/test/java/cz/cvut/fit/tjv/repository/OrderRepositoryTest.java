@@ -2,6 +2,7 @@ package cz.cvut.fit.tjv.repository;
 
 import cz.cvut.fit.tjv.domain.Order;
 import cz.cvut.fit.tjv.domain.OrderState;
+import cz.cvut.fit.tjv.domain.Product;
 import cz.cvut.fit.tjv.domain.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @DataJpaTest
@@ -44,13 +46,13 @@ public class OrderRepositoryTest {
 
         order1.setUser(user1);
         order2.setUser(user1);
-        order3.setUser(user1);
+        order3.setUser(user2);
         order4.setUser(user2);
 
         order1.setId(1L);
-        order2.setId(2L);
-        order3.setId(3L);
-        order4.setId(4L);
+        order2.setId(5L);
+        order3.setId(10L);
+        order4.setId(15L);
 
         order1.setDate(LocalDateTime.now());
         order2.setDate(LocalDateTime.now());
@@ -67,9 +69,9 @@ public class OrderRepositoryTest {
         order3.setTotalPrice(0D);
         order4.setTotalPrice(0D);
 
+
         userRepository.save(user1);
         userRepository.save(user2);
-
 
         orderRepository.save(order1);
         orderRepository.save(order2);
@@ -77,10 +79,11 @@ public class OrderRepositoryTest {
         orderRepository.save(order4);
 
 
+
         var foundOrders = orderRepository.findByUserUsername(user1.getUsername());
 
-        Assertions.assertEquals(3, foundOrders.size());
-        Assertions.assertIterableEquals(List.of(order1, order2, order3), foundOrders);
+        Assertions.assertEquals(2, foundOrders.size());
+        Assertions.assertIterableEquals(List.of(order1, order2), foundOrders);
     }
 
     @Test
