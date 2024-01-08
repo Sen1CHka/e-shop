@@ -6,7 +6,9 @@ stages:
 
 build:
   stage: build
-  script: ./gradlew build
+  script:
+    - chmod +x gradlew
+    - ./gradlew build
 
 test:
   stage: test
