@@ -15,7 +15,7 @@ Objednejte výstupní filtr
 
 ### Formulace
 Vyberte všechny produkty, které jsou levnější než daná cena
-### použitím
+### Použitím
 Filtr pro odstranění produktů
 
 ## Příprava a spuštění
