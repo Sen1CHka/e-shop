@@ -58,7 +58,7 @@ public class OrderController {
                     .map(OrderServiceImpl::convertOrderToDto)
                     .toList();
         }
-        if(date!=null && !"null".equals(date))
+        if(date!=null && !date.equals("null") && !date.isEmpty())
         {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date dateTime = formatter.parse(date);

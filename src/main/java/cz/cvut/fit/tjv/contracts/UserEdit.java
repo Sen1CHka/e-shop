@@ -9,8 +9,6 @@ public class UserEdit {
 
     private String password;
 
-    public UserEdit() {
-    }
 
     public String getPassword() {
         return password;

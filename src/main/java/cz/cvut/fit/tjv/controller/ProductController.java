@@ -40,7 +40,7 @@ public class ProductController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Product.class)))
     })
-    public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Double price) {
+    public ResponseEntity<?> getAllProducts(@RequestParam(required = false) String price) {
         List<cz.cvut.fit.tjv.domain.Product> orders = StreamSupport.stream(productService.readAll().spliterator(), false)
                 .toList();
 
@@ -48,9 +48,9 @@ public class ProductController {
                 .map(ProductServiceImpl::convertProductToDto)
                 .sorted(Comparator.comparing(Product::getId))
                 .toList());
-        if(!(price ==null))
+        if(price!=null && !price.equals("null"))
         {
-            productDTOs = productService.getLessPrice(price).stream()
+            productDTOs = productService.getLessPrice(Double.valueOf(price)).stream()
                 .map(ProductServiceImpl::convertProductToDto)
                 .toList();
         }
