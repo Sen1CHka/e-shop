@@ -19,7 +19,7 @@ Select all products that are cheaper than a specified price.
 Filter to remove products above the price limit.
 
 ## Setup and Running
-Swagger : localhost:8090/swagger-ui.html
+Swagger : localhost:8090/swagger-ui.html /n
 To run the application, both repositories and all required tools must be installed.
 
 ### Requirements
