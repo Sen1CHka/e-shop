@@ -19,14 +19,7 @@ Select all products that are cheaper than a specified price.
 Filter to remove products above the price limit.
 
 ## Setup and Running
-
-The application consists of two parts:
-
-API: https://gitlab.fit.cvut.cz/senykiva/bi-tjv-semestral-work
-
-Client: https://gitlab.fit.cvut.cz/senykiva/bi-tjv-semestral-work
-(selling-frontend)
-
+Swagger : localhost:8090/swagger-ui.html
 To run the application, both repositories and all required tools must be installed.
 
 ### Requirements
@@ -38,7 +31,7 @@ To run the application, both repositories and all required tools must be install
 ## Running the Application
 
 ### Client: 
-In the directory `bi-tjv-semestral-work/selling-frontend`
+In the directory `eshop/selling-frontend`
 
 ```bash
 npm start
