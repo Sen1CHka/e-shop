@@ -15,13 +15,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(UserController.class)
-public class UserControllerMvcTest {
+public class UserResponseControllerMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -32,13 +34,16 @@ public class UserControllerMvcTest {
     void createUserTest() throws Exception {
 
         User user = new User();
-        user.setPassword("testpass");
-        user.setEmail("testuser123@gmail.com");
-        user.setRealName("Test User");
         user.setUsername("user456");
-        Mockito.when(userService.create(user)).thenReturn(user);
+        user.setRealName("Test User");
+        user.setEmail("testuser123@gmail.com");
+        user.setPassword("testpass");
+
+        Mockito.when(userService.create(Mockito.any(User.class))).thenReturn(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user")
+                        .with(user("anyUser"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
                                 "  \"username\": \"user456\",\n" +

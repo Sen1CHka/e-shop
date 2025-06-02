@@ -1,19 +1,28 @@
 package eshop.contracts;
 
-public class ProductEdit {
+public class ProductResponse {
+    private Long id;
     private String name;
     private String description;
     private Double price;
     private Integer availableAmount;
 
-    public ProductEdit() {
+    public ProductResponse() {
     }
-
-    public ProductEdit(String name, String description, Double price, Integer availableAmount) {
+    public ProductResponse(Long id, String name, String description, Double price, Integer availableAmount) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.availableAmount = availableAmount;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -44,7 +53,7 @@ public class ProductEdit {
         return availableAmount;
     }
 
-    public void setAvailableAmount(Integer availableAmount) {
-        this.availableAmount = availableAmount;
+    public void setAvailableAmount(Integer avaliableAmount) {
+        this.availableAmount = avaliableAmount;
     }
 }

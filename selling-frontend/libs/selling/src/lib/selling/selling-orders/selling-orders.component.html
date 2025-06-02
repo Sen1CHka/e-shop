@@ -1,5 +1,5 @@
 <div class="d-flex">
-  <selling-order-filter (filterObject)="filterData($event)"></selling-order-filter>
+  <selling-orderResponse-filter (filterObject)="filterData($event)"></selling-orderResponse-filter>
   <selling-button [buttonLabel]="'Create Order'" (click)="createOrders()"></selling-button>
 </div>
 
@@ -15,15 +15,15 @@
   [contentTemplate]="dialogContent"
 ></selling-dialog>
 
-<selling-order-form
-  [order]="currentEditableOrder$.value"
+<selling-orderResponse-form
+  [orderResponse]="currentEditableOrder$.value"
   [isDialogVisible$]="isEditDialogVisible$"
   (isOrderSaved)="updateOrders($event)"
-></selling-order-form>
+></selling-orderResponse-form>
 
 <ng-template #dialogContent>
   <selling-table
-    class="products-table"
+    class="productResponses-table"
     [columnDefinitions]="productsColumnsDefinition"
     [data$]="currentOrderProducts$"
   >

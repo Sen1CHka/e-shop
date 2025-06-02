@@ -20,7 +20,7 @@ public class Order implements EntityWithId<Long> {
 
     @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "username", referencedColumnName = "username")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     private LocalDateTime date;

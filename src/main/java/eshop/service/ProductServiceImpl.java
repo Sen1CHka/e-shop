@@ -1,7 +1,7 @@
 package eshop.service;
 
-import eshop.contracts.Product;
-import eshop.contracts.ProductEdit;
+import eshop.contracts.ProductResponse;
+import eshop.contracts.ProductRequest;
 import eshop.domain.Order;
 import eshop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +65,10 @@ public class ProductServiceImpl extends CrudServiceImpl<eshop.domain.Product, Lo
     }
 
 
-    public static Product convertProductToDto(eshop.domain.Product product)
+    public static ProductResponse convertProductToDto(eshop.domain.Product product)
     {
-        if(product==null) return new Product();
-        return new Product(
+        if(product==null) return new ProductResponse();
+        return new ProductResponse(
                 product.getId(),
                 product.getName(),
                 product.getDescription(),
@@ -77,7 +77,7 @@ public class ProductServiceImpl extends CrudServiceImpl<eshop.domain.Product, Lo
         );
     }
 
-    public eshop.domain.Product convertDtoToProduct(ProductEdit product)
+    public eshop.domain.Product convertDtoToProduct(ProductRequest product)
     {
         eshop.domain.Product newProduct = new eshop.domain.Product();
         newProduct.setName(product.getName());

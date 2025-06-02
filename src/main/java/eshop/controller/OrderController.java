@@ -1,7 +1,8 @@
 package eshop.controller;
 
-import eshop.contracts.Order;
-import eshop.contracts.OrderEdit;
+import eshop.contracts.OrderResponse;
+import eshop.contracts.OrderRequest;
+import eshop.domain.Order;
 import eshop.domain.OrderState;
 import eshop.service.OrderService;
 import eshop.service.OrderServiceImpl;
@@ -39,21 +40,21 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class)))
+                            schema = @Schema(implementation = OrderResponse.class)))
     })
-    public ResponseEntity<Collection<Order>> getAllOrders(@RequestParam(required = false) String userId,
-                                                          @RequestParam(required = false) String date) throws ParseException {
+    public ResponseEntity<Collection<OrderResponse>> getAllOrders(@RequestParam(required = false) String userId,
+                                                                  @RequestParam(required = false) String date) throws ParseException {
         List<eshop.domain.Order> orders = StreamSupport.stream(orderService.readAll().spliterator(), false)
                 .toList();
 
-        List<Order> orderDTOs = new java.util.ArrayList<>(orders.stream()
+        List<OrderResponse> orderResponseDTOS = new java.util.ArrayList<>(orders.stream()
                 .map(OrderServiceImpl::convertOrderToDto)
                 .toList());
 
         System.out.println(date);
         if(userId!=null)
         {
-            orderDTOs = orderService.getAllByAuthor(userId).stream()
+            orderResponseDTOS = orderService.getAllByAuthor(userId).stream()
                     .map(OrderServiceImpl::convertOrderToDto)
                     .toList();
         }
@@ -62,12 +63,12 @@ public class OrderController {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date dateTime = formatter.parse(date);
             LocalDateTime localDateTime = dateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            orderDTOs = orderDTOs.stream()
-                    .filter(order -> order.getDate().isBefore(localDateTime))
+            orderResponseDTOS = orderResponseDTOS.stream()
+                    .filter(orderResponse -> orderResponse.getDate().isBefore(localDateTime))
                     .toList();
         }
 
-        return ResponseEntity.ok(orderDTOs);
+        return ResponseEntity.ok(orderResponseDTOS);
     }
 
     @PostMapping
@@ -75,9 +76,9 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful creation",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class)))
+                            schema = @Schema(implementation = OrderResponse.class)))
     })
-    public ResponseEntity<eshop.domain.Order> create(@RequestBody OrderEdit order) {
+    public ResponseEntity<Order> create(@RequestBody OrderRequest order) {
         eshop.domain.Order newOrder = OrderServiceImpl.convertEditToOrder(order);
         return ResponseEntity.ok(orderService.create(newOrder));
     }
@@ -88,12 +89,12 @@ public class OrderController {
             @ApiResponse(responseCode = "200", description = "Successfully deleted the order"),
             @ApiResponse(responseCode = "404", description = "Order not found with the given ID")
     })
-    public ResponseEntity<?> delete(@PathVariable Long id)
+    public ResponseEntity<OrderResponse> delete(@PathVariable Long id)
     {
         if(orderService.readById(id).isEmpty()) throw new RuntimeException("Order doesnt exist!");
-        Order order = OrderServiceImpl.convertOrderToDto(orderService.readById(id).get());
+        OrderResponse orderResponse = OrderServiceImpl.convertOrderToDto(orderService.readById(id).get());
         orderService.deleteById(id);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(orderResponse);
     }
 
     @PatchMapping("/{id}")
@@ -101,15 +102,15 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order state updated successfully",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class))),
+                            schema = @Schema(implementation = OrderResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request - invalid state provided"),
             @ApiResponse(responseCode = "404", description = "Order not found with the given ID")
     })
-    public ResponseEntity<?> updateOrderState(@PathVariable Long id, @RequestParam Integer state) {
+    public ResponseEntity<Order> updateOrderState(@PathVariable Long id, @RequestParam Integer state) {
 
         try {
 
-            eshop.domain.Order updatedOrder = orderService.updateOrderState(id, OrderState.values()[state]);
+            Order updatedOrder = orderService.updateOrderState(id, OrderState.values()[state]);
             if (updatedOrder == null) {
                 return ResponseEntity.notFound().build();
             }

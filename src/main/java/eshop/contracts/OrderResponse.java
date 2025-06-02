@@ -3,13 +3,13 @@ package eshop.contracts;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public class Order {
+public class OrderResponse {
 
     private Integer id;
 
     private String username;
 
-    private Collection<Product> products;
+    private Collection<ProductResponse> productResponses;
 
     private LocalDateTime date;
 
@@ -19,13 +19,13 @@ public class Order {
 
     private Double totalPrice;
 
-    public Order() {
+    public OrderResponse() {
     }
 
-    public Order(Integer id, String username, Collection<Product> products, LocalDateTime date, String state, Integer stateId, Double totalPrice) {
+    public OrderResponse(Integer id, String username, Collection<ProductResponse> productResponses, LocalDateTime date, String state, Integer stateId, Double totalPrice) {
         this.id = id;
         this.username = username;
-        this.products = products;
+        this.productResponses = productResponses;
         this.date = date;
         this.state = state;
         this.stateId = stateId;
@@ -65,12 +65,12 @@ public class Order {
         this.username = userName;
     }
 
-    public Collection<Product> getProducts() {
-        return products;
+    public Collection<ProductResponse> getProducts() {
+        return productResponses;
     }
 
-    public void setProducts(Collection<Product> products) {
-        this.products = products;
+    public void setProducts(Collection<ProductResponse> productResponses) {
+        this.productResponses = productResponses;
     }
 
     public LocalDateTime getDate() {

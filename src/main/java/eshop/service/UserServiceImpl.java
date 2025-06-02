@@ -1,19 +1,23 @@
 package eshop.service;
 
-import eshop.contracts.User;
-import eshop.contracts.UserEdit;
+import eshop.contracts.UserResponse;
+import eshop.contracts.UserRequest;
 import eshop.domain.Order;
+import eshop.domain.Role;
+import eshop.domain.User;
 import eshop.repository.OrderRepository;
 import eshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl extends CrudServiceImpl<eshop.domain.User, String> implements UserService{
+public class UserServiceImpl extends CrudServiceImpl<User, Integer> implements UserService{
 
 
     @Autowired
@@ -22,34 +26,53 @@ public class UserServiceImpl extends CrudServiceImpl<eshop.domain.User, String> 
     @Autowired
     private OrderRepository orderRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
-    protected CrudRepository<eshop.domain.User, String> getRepository() {
+    protected CrudRepository<User, Integer> getRepository() {
         return userRepository;
     }
 
     @Override
-    public User convertUserToDto(eshop.domain.User user)
+    public UserResponse convertUserToDto(eshop.domain.User user)
     {
-        if(user == null) return new User();
-        return new User(user.getUsername(), user.getRealName(), user.getEmail());
+        if(user == null) return new UserResponse();
+        return new UserResponse(user.getUsername(), user.getRealName(), user.getEmail(), user.getRole());
     }
 
     @Override
-    public eshop.domain.User convertDtoToUser(UserEdit userDto) {
-        eshop.domain.User user = new eshop.domain.User();
+    public void roleUpdate(User user, Role role) {
+        user.setRole(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public User registerUser(UserRequest userDto) {
+        User newUser = convertDtoToUser(userDto);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        userRepository.save(newUser);
+        return newUser;
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User convertDtoToUser(UserRequest userDto) {
+        User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setRealName(userDto.getRealName());
+        user.setRole(Role.USER);
         return user;
     }
 
     @Override
-    public eshop.domain.User update(String id, eshop.domain.User e) {
+    public User update(Integer id, User e) {
         if(userRepository.findById(id).isEmpty()) throw new RuntimeException("User doesnt exist");
 
         eshop.domain.User user = userRepository.findById(id).get();
@@ -62,13 +85,21 @@ public class UserServiceImpl extends CrudServiceImpl<eshop.domain.User, String> 
     }
 
     @Override
-    public String deleteById(String username) {
-        if(!userRepository.existsById(username)) throw new RuntimeException("User doesnt exist");
+    public Integer deleteById(Integer id) {
+        if(!userRepository.existsById(id)) throw new RuntimeException("User doesnt exist");
 
-        List<Order> orders = new ArrayList<>(userRepository.findById(username).get().getOrders());
+        List<Order> orders = new ArrayList<>(userRepository.findById(id).get().getOrders());
         orderRepository.deleteAll(orders);
-        userRepository.deleteById(username);
+        userRepository.deleteById(id);
 
-        return username;
+        return id;
     }
+
+//    public void registerUser(UserRequest dto) {
+//        User user = new User();
+//        user.setUsername(dto.getUsername());
+//        user.setEmail(dto.getEmail());
+//        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+//        userRepository.save(user);
+//    }
 }

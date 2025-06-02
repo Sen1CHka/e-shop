@@ -1,7 +1,7 @@
 package eshop.controller;
 
-import eshop.contracts.Product;
-import eshop.contracts.ProductEdit;
+import eshop.contracts.ProductResponse;
+import eshop.contracts.ProductRequest;
 import eshop.service.ProductService;
 import eshop.service.ProductServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,32 +33,32 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of products",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class)))
+                            schema = @Schema(implementation = ProductResponse.class)))
     })
     public ResponseEntity<?> getAllProducts(@RequestParam(required = false) String price) {
         List<eshop.domain.Product> orders = StreamSupport.stream(productService.readAll().spliterator(), false)
                 .toList();
 
-        List<Product> productDTOs = new java.util.ArrayList<>(orders.stream()
+        List<ProductResponse> productResponseDTOS = new java.util.ArrayList<>(orders.stream()
                 .map(ProductServiceImpl::convertProductToDto)
-                .sorted(Comparator.comparing(Product::getId))
+                .sorted(Comparator.comparing(ProductResponse::getId))
                 .toList());
         if(price!=null && !price.equals("null"))
         {
-            productDTOs = productService.getLessPrice(Double.valueOf(price)).stream()
+            productResponseDTOS = productService.getLessPrice(Double.valueOf(price)).stream()
                 .map(ProductServiceImpl::convertProductToDto)
                 .toList();
         }
-        return ResponseEntity.ok(productDTOs);
+        return ResponseEntity.ok(productResponseDTOS);
     }
     @PostMapping
     @Operation(summary = "Create a product", description = "Creates a new product with the given details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful creation of the product",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class)))
+                            schema = @Schema(implementation = ProductResponse.class)))
     })
-    public ResponseEntity<?> create(@RequestBody ProductEdit product) {
+    public ResponseEntity<?> create(@RequestBody ProductRequest product) {
         eshop.domain.Product newProduct = productService.convertDtoToProduct(product);
         return ResponseEntity.ok(productService.create(newProduct));
     }
@@ -68,10 +68,10 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product successfully updated",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))),
+                            schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found")
     })
-    public ResponseEntity<?> update(@RequestBody ProductEdit newProduct, @PathVariable Long id)
+    public ResponseEntity<?> update(@RequestBody ProductRequest newProduct, @PathVariable Long id)
     {
         if(!productService.readById(id).isPresent())
         {

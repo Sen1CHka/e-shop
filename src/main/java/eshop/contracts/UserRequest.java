@@ -1,6 +1,10 @@
 package eshop.contracts;
 
-public class UserEdit {
+import eshop.domain.Role;
+
+import java.util.Set;
+
+public class UserRequest {
     private String username;
 
     private String realName;
@@ -9,19 +13,20 @@ public class UserEdit {
 
     private String password;
 
+    public UserRequest() {}
+
+    public UserRequest(String username, String realName, String email, String password) {
+        this.username = username;
+        this.realName = realName;
+        this.email = email;
+        this.password = password;
+    }
 
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserEdit(String username, String realName, String email, String password) {
-        this.username = username;
-        this.realName = realName;
-        this.email = email;
         this.password = password;
     }
 
@@ -48,4 +53,5 @@ public class UserEdit {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

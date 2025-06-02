@@ -1,7 +1,8 @@
 package eshop.service;
 
-import eshop.contracts.Order;
-import eshop.contracts.OrderEdit;
+import eshop.contracts.OrderResponse;
+import eshop.contracts.OrderRequest;
+import eshop.domain.Order;
 import eshop.domain.OrderState;
 import eshop.domain.Product;
 import eshop.domain.User;
@@ -50,8 +51,8 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
         return orderRepository.findByDateBefore(date);
     }
 
-    public static Order convertOrderToDto(eshop.domain.Order order) {
-        if (order == null || order.getUser() == null) return new Order();
+    public static OrderResponse convertOrderToDto(eshop.domain.Order order) {
+        if (order == null || order.getUser() == null) return new OrderResponse();
         Integer orderState = 0;
         for (OrderState day : OrderState.values()) {
             if (day.name().equalsIgnoreCase(order.getState().toString())) {
@@ -59,7 +60,7 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
             }
         }
 
-        return new Order(
+        return new OrderResponse(
                 order.getId().intValue(),
                 order.getUser().getUsername(),
                 order.getProducts().stream()
@@ -72,40 +73,27 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
         );
     }
 
-    public static eshop.domain.Order convertEditToOrder(OrderEdit orderDTO) {
-        eshop.domain.Order order = new eshop.domain.Order();
+    public static Order convertEditToOrder(OrderRequest orderDTO) {
+        Order order = new eshop.domain.Order();
 
         order.setDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         order.setState(OrderState.values()[orderDTO.getState()]);
-        Optional<User> optionalUser = userRepository.findById("user123");
-        User user;
+        Optional<User> optionalUser = userRepository.findByUsername(orderDTO.getUsername());
         if(optionalUser.isEmpty())
         {
-            user = new User();
-            user.setUsername("user123");
-            user.setRealName("Default User");
-            user.setEmail("defaultuser@fit.cz");
-            user.setPassword("password123");
-
-            userRepository.save(user);
+            return null;
         }
-        else {
-            user = optionalUser.get();
-        }
-        order.setUser(user);
-        Collection<Product> products = new ArrayList<>();
-        products = orderDTO.getProducts().stream()
+        order.setUser(optionalUser.get());
+        Collection<Product> products = orderDTO.getProducts().stream()
                 .map(product -> productRepository.findById(product).get())
                 .collect(Collectors.toList());
         order.setProducts(products);
         order.calculateTotalPrice();
 
-        System.out.println(order);
-
         return order;
     }
     @Override
-    public eshop.domain.Order updateOrderState(Long id, OrderState newState) {
+    public Order updateOrderState(Long id, OrderState newState) {
         if(orderRepository.findById(id).isEmpty()) throw new RuntimeException("Order doesnt exist");
         eshop.domain.Order order = orderRepository.findById(id).get();
         order.setState(newState);
@@ -115,7 +103,7 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
 
 
     @Override
-    public eshop.domain.Order update(Long aLong, eshop.domain.Order e) {
+    public Order update(Long aLong, Order e) {
         return null;
     }
 }

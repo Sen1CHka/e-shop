@@ -5,12 +5,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User implements EntityWithId<String>{
+public class User implements EntityWithId<Integer>{
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "username")
     private String username;
     @Column(name = "realname")
     private String realName;
@@ -24,10 +31,13 @@ public class User implements EntityWithId<String>{
     @OneToMany(mappedBy = "user")
     private Collection<Order> orders;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Override
     @JsonIgnore
-    public String getId() {
-        return username;
+    public Integer getId() {
+        return id;
     }
     public String getUsername() {
         return username;
@@ -39,6 +49,14 @@ public class User implements EntityWithId<String>{
 
     public String getRealName() {
         return realName;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public void setRealName(String realName) {

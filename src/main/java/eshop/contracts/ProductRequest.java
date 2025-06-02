@@ -1,28 +1,19 @@
 package eshop.contracts;
 
-public class Product {
-    private Long id;
+public class ProductRequest {
     private String name;
     private String description;
     private Double price;
     private Integer availableAmount;
 
-    public Product() {
+    public ProductRequest() {
     }
-    public Product(Long id, String name, String description, Double price, Integer availableAmount) {
-        this.id = id;
+
+    public ProductRequest(String name, String description, Double price, Integer availableAmount) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.availableAmount = availableAmount;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -53,7 +44,7 @@ public class Product {
         return availableAmount;
     }
 
-    public void setAvailableAmount(Integer avaliableAmount) {
-        this.availableAmount = avaliableAmount;
+    public void setAvailableAmount(Integer availableAmount) {
+        this.availableAmount = availableAmount;
     }
 }

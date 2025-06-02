@@ -1,18 +1,24 @@
 package eshop.contracts;
 
-public class User {
+import eshop.domain.Role;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class UserResponse {
 
     private String username;
     private String realName;
     private String email;
+    private Role role;
 
-    public User() {
-    }
+    public UserResponse() {}
 
-    public User(String username, String realName, String email) {
+    public UserResponse(String username, String realName, String email, Role role) {
         this.username = username;
         this.realName = realName;
         this.email = email;
+        this.role = role;
     }
 
     public String getUsername() {
@@ -27,6 +33,10 @@ public class User {
         return realName;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     public void setRealName(String realName) {
         this.realName = realName;
     }
@@ -37,5 +47,9 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

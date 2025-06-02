@@ -21,15 +21,15 @@
       </ng-select>
     </div>
     <div>
-      <label for="products">Products</label>
+      <label for="productResponses">Products</label>
       <ng-select
-        formControlName="products"
+        formControlName="productResponses"
         [items]="productList$ | async"
         [multiple]="true"
         [bindLabel]="'name'"
         [bindValue]="'id'"
         [readonly]="order !== null && order !== undefined"
-        [placeholder]="'Set products'"
+        [placeholder]="'Set productResponses'"
       >
       </ng-select>
     </div>

@@ -6,6 +6,7 @@ import eshop.domain.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @DataJpaTest
-public class OrderRepositoryTest {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class OrderResponseRepositoryTest {
 
 
     @Autowired
@@ -35,7 +37,6 @@ public class OrderRepositoryTest {
         user2.setEmail("user456@gmail.com");
         user2.setRealName("User 456");
         user2.setPassword("user456");
-
 
         var order1 = new Order();
         var order2 = new Order();

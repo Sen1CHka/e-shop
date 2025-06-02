@@ -1,6 +1,6 @@
 package eshop.service;
 
-import eshop.contracts.Order;
+import eshop.contracts.OrderResponse;
 import eshop.domain.OrderState;
 import eshop.domain.Product;
 import eshop.domain.User;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class OrderServiceImplUnitTest {
+public class OrderResponseServiceImplUnitTest {
     @Autowired
     private OrderServiceImpl orderService;
 
@@ -83,7 +83,7 @@ public class OrderServiceImplUnitTest {
     @Test
     public void convertOrderToDtoTest() {
         eshop.domain.Order order = new eshop.domain.Order();
-        Order dto = OrderServiceImpl.convertOrderToDto(order);
+        OrderResponse dto = OrderServiceImpl.convertOrderToDto(order);
         assertNotNull(dto);
     }
 }
