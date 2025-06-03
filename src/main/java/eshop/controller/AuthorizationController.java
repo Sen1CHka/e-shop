@@ -36,14 +36,20 @@ public class AuthorizationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthorizationRequest request) {
 
-        System.out.println("GET DST SKJKHLHLHH");
+        System.out.println(request.getUsername());
+        System.out.println(request.getPassword());
+        System.out.println(passwordEncoder.matches(request.getPassword(),userService.findByUsername(request.getUsername()).get().getPassword()));
+
         try {
+
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
+
+        System.out.println("hehhehehehe");
 
         var user = userService.findByUsername(request.getUsername());
         if(user.isEmpty())

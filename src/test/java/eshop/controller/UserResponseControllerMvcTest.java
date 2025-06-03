@@ -4,6 +4,7 @@ import eshop.domain.User;
 import eshop.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,7 +40,7 @@ public class UserResponseControllerMvcTest {
         user.setEmail("testuser123@gmail.com");
         user.setPassword("testpass");
 
-        Mockito.when(userService.create(Mockito.any(User.class))).thenReturn(user);
+        Mockito.when(userService.registerUser(Mockito.any())).thenReturn(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user")
                         .with(user("anyUser"))

@@ -1,12 +1,17 @@
 package eshop.service;
 
 import eshop.contracts.OrderResponse;
+import eshop.domain.Order;
 import eshop.domain.OrderState;
 import eshop.domain.Product;
 import eshop.domain.User;
 import eshop.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,17 +26,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+
+@ExtendWith(MockitoExtension.class)
 public class OrderResponseServiceImplUnitTest {
-    @Autowired
+    @InjectMocks
     private OrderServiceImpl orderService;
 
-    @MockBean
+    @Mock
     private OrderRepository orderRepository;
 
     User user;
-    eshop.domain.Order order1;
-    eshop.domain.Order order2;
+    Order order1;
+    Order order2;
 
     @BeforeEach
     public void setUp() {
@@ -56,11 +62,11 @@ public class OrderResponseServiceImplUnitTest {
     @Test
     public void readAllByAuthorTest() {
 
-        List<eshop.domain.Order> orders = List.of(order1, order2);
+        List<Order> orders = List.of(order1, order2);
 
         when(orderRepository.findByUserUsername(user.getUsername())).thenReturn(orders);
 
-        Collection<eshop.domain.Order> result = orderService.getAllByAuthor(user.getUsername());
+        Collection<Order> result = orderService.getAllByAuthor(user.getUsername());
 
         verify(orderRepository).findByUserUsername(user.getUsername());
         assertEquals(orders, result);

@@ -68,7 +68,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody UserRequest userDto) {
-       var user = userService.findByUsername(username);
+
+        System.out.println("Updating user: " + userDto.getUsername());
+        var user = userService.findByUsername(username);
         if (user.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

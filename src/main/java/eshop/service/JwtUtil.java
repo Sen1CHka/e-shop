@@ -12,9 +12,6 @@ public class JwtUtil {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long expiration = 3600000;
 
-    public JwtUtil() {
-    }
-
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)

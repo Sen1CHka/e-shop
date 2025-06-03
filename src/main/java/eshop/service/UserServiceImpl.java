@@ -9,6 +9,9 @@ import eshop.repository.OrderRepository;
 import eshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl extends CrudServiceImpl<User, Integer> implements UserService{
-
+public class UserServiceImpl extends CrudServiceImpl<User, Integer> implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -95,11 +97,16 @@ public class UserServiceImpl extends CrudServiceImpl<User, Integer> implements U
         return id;
     }
 
-//    public void registerUser(UserRequest dto) {
-//        User user = new User();
-//        user.setUsername(dto.getUsername());
-//        user.setEmail(dto.getEmail());
-//        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-//        userRepository.save(user);
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
+    }
+
 }

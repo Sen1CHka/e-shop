@@ -5,6 +5,7 @@ import eshop.domain.Role;
 import java.util.Set;
 
 public class UserRequest {
+
     private String username;
 
     private String realName;
