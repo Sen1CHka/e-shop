@@ -25,12 +25,10 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/order")
 public class OrderController {
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -48,14 +46,14 @@ public class OrderController {
                 .toList();
 
         List<OrderResponse> orderResponseDTOS = new java.util.ArrayList<>(orders.stream()
-                .map(OrderServiceImpl::convertOrderToDto)
+                .map(orderService::convertOrderToDto)
                 .toList());
 
         System.out.println(date);
         if(userId!=null)
         {
             orderResponseDTOS = orderService.getAllByAuthor(userId).stream()
-                    .map(OrderServiceImpl::convertOrderToDto)
+                    .map(orderService::convertOrderToDto)
                     .toList();
         }
         if(date!=null && !date.equals("null") && !date.isEmpty())
@@ -79,7 +77,7 @@ public class OrderController {
                             schema = @Schema(implementation = OrderResponse.class)))
     })
     public ResponseEntity<Order> create(@RequestBody OrderRequest order) {
-        eshop.domain.Order newOrder = OrderServiceImpl.convertEditToOrder(order);
+        eshop.domain.Order newOrder = orderService.convertEditToOrder(order);
         return ResponseEntity.ok(orderService.create(newOrder));
     }
 
@@ -92,7 +90,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> delete(@PathVariable Long id)
     {
         if(orderService.readById(id).isEmpty()) throw new RuntimeException("Order doesnt exist!");
-        OrderResponse orderResponse = OrderServiceImpl.convertOrderToDto(orderService.readById(id).get());
+        OrderResponse orderResponse = orderService.convertOrderToDto(orderService.readById(id).get());
         orderService.deleteById(id);
         return ResponseEntity.ok(orderResponse);
     }

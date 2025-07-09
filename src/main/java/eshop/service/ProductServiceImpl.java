@@ -3,6 +3,7 @@ package eshop.service;
 import eshop.contracts.ProductResponse;
 import eshop.contracts.ProductRequest;
 import eshop.domain.Order;
+import eshop.domain.Product;
 import eshop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
@@ -15,8 +16,7 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl extends CrudServiceImpl<eshop.domain.Product, Long> implements ProductService{
 
-    @Autowired
-    private static ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -28,7 +28,7 @@ public class ProductServiceImpl extends CrudServiceImpl<eshop.domain.Product, Lo
     }
 
     @Override
-    public Collection<eshop.domain.Product> getLessPrice(Double price) {
+    public Collection<Product> getLessPrice(Double price) {
         return productRepository.findLessPrice(price);
     }
 
@@ -65,7 +65,7 @@ public class ProductServiceImpl extends CrudServiceImpl<eshop.domain.Product, Lo
     }
 
 
-    public static ProductResponse convertProductToDto(eshop.domain.Product product)
+    public ProductResponse convertProductToDto(Product product)
     {
         if(product==null) return new ProductResponse();
         return new ProductResponse(
@@ -77,7 +77,7 @@ public class ProductServiceImpl extends CrudServiceImpl<eshop.domain.Product, Lo
         );
     }
 
-    public eshop.domain.Product convertDtoToProduct(ProductRequest product)
+    public Product convertDtoToProduct(ProductRequest product)
     {
         eshop.domain.Product newProduct = new eshop.domain.Product();
         newProduct.setName(product.getName());

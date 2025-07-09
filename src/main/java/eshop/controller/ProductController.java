@@ -21,9 +21,9 @@ import java.util.stream.StreamSupport;
 @CrossOrigin
 @RequestMapping("/api/product")
 public class ProductController {
-    private ProductService productService;
 
-    @Autowired
+    private final ProductService productService;
+
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -40,13 +40,13 @@ public class ProductController {
                 .toList();
 
         List<ProductResponse> productResponseDTOS = new java.util.ArrayList<>(orders.stream()
-                .map(ProductServiceImpl::convertProductToDto)
+                .map(productService::convertProductToDto)
                 .sorted(Comparator.comparing(ProductResponse::getId))
                 .toList());
         if(price!=null && !price.equals("null"))
         {
             productResponseDTOS = productService.getLessPrice(Double.valueOf(price)).stream()
-                .map(ProductServiceImpl::convertProductToDto)
+                .map(productService::convertProductToDto)
                 .toList();
         }
         return ResponseEntity.ok(productResponseDTOS);

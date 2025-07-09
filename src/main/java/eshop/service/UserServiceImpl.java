@@ -22,14 +22,15 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl extends CrudServiceImpl<User, Integer> implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserServiceImpl(UserRepository userRepository, OrderRepository orderRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     protected CrudRepository<User, Integer> getRepository() {

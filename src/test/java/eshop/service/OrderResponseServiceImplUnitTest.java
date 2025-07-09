@@ -89,7 +89,7 @@ public class OrderResponseServiceImplUnitTest {
     @Test
     public void convertOrderToDtoTest() {
         eshop.domain.Order order = new eshop.domain.Order();
-        OrderResponse dto = OrderServiceImpl.convertOrderToDto(order);
+        OrderResponse dto = orderService.convertOrderToDto(order);
         assertNotNull(dto);
     }
 }

@@ -23,17 +23,16 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private static UserRepository userRepository;
-    @Autowired
-    private static ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository, ProductService productService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
         return orderRepository.findByDateBefore(date);
     }
 
-    public static OrderResponse convertOrderToDto(eshop.domain.Order order) {
+    public OrderResponse convertOrderToDto(Order order) {
         if (order == null || order.getUser() == null) return new OrderResponse();
         Integer orderState = 0;
         for (OrderState day : OrderState.values()) {
@@ -64,7 +63,7 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
                 order.getId().intValue(),
                 order.getUser().getUsername(),
                 order.getProducts().stream()
-                        .map(ProductServiceImpl::convertProductToDto)
+                        .map(productService::convertProductToDto)
                         .collect(Collectors.toList()),
                 order.getDate(),
                 order.getState().toString(),
@@ -73,9 +72,8 @@ public class OrderServiceImpl extends CrudServiceImpl<eshop.domain.Order, Long> 
         );
     }
 
-    public static Order convertEditToOrder(OrderRequest orderDTO) {
+    public Order convertEditToOrder(OrderRequest orderDTO) {
         Order order = new eshop.domain.Order();
-
         order.setDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         order.setState(OrderState.values()[orderDTO.getState()]);
         Optional<User> optionalUser = userRepository.findByUsername(orderDTO.getUsername());

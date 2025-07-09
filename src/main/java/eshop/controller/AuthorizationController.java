@@ -21,36 +21,28 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api")
 public class AuthorizationController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public AuthorizationController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService, PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthorizationRequest request) {
-
-        System.out.println(request.getUsername());
-        System.out.println(request.getPassword());
-        System.out.println(passwordEncoder.matches(request.getPassword(),userService.findByUsername(request.getUsername()).get().getPassword()));
-
         try {
-
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
-
-        System.out.println("hehhehehehe");
-
         var user = userService.findByUsername(request.getUsername());
         if(user.isEmpty())
         {

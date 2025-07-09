@@ -21,9 +21,9 @@ import java.util.stream.StreamSupport;
 @CrossOrigin
 @RequestMapping("/api/user")
 public class UserController {
+
     private UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
