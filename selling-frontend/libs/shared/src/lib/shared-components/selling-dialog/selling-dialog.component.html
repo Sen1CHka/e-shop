@@ -1,0 +1,23 @@
+<ng-container *ngIf="isVisible">
+  <div class="dialog-container" (mousedown)="onBackdrop($event)">
+    <div
+      class="dialog-content"
+      [class.dialog-wide]="wide"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="dialogTitle"
+      tabindex="-1"
+      #panel
+    >
+      <header class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <button type="button" class="icon-button" aria-label="Close" (click)="closeDialog()">
+          <selling-icon name="x"></selling-icon>
+        </button>
+      </header>
+      <div class="dialog-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</ng-container>

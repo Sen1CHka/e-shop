@@ -1,0 +1,43 @@
+.quantity {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #cbd2dc;
+  border-radius: 0.6rem;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+button {
+  width: 2.5rem;
+  min-height: 2.5rem;
+  border: 0;
+  background: none;
+  color: #1e293b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background-color: #eef2f7;
+  }
+
+  &:disabled {
+    color: #b3bac6;
+  }
+}
+
+input {
+  width: 3rem;
+  border: 0;
+  border-inline: 1px solid #e3e7ee;
+  text-align: center;
+  font-weight: 600;
+  appearance: textfield;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}

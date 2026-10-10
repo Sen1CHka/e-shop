@@ -1,0 +1,41 @@
+<article class="product-card">
+  <a class="product-card-image" [routerLink]="['/product', product.id]" tabindex="-1" aria-hidden="true">
+    <selling-product-image [name]="product.name" [imageUrl]="product.imageUrl" [icon]="product.categoryIcon">
+    </selling-product-image>
+  </a>
+
+  <button
+    type="button"
+    class="favorite-button"
+    [class.is-favorite]="isFavorite"
+    [attr.aria-pressed]="isFavorite"
+    [attr.aria-label]="(isFavorite ? 'Remove from favourites: ' : 'Save to favourites: ') + product.name"
+    (click)="favorites.toggle(product)"
+  >
+    <selling-icon name="heart" [filled]="isFavorite"></selling-icon>
+  </button>
+
+  <div class="product-card-body">
+    <div class="product-card-category">{{ product.brand || product.categoryName }}</div>
+    <h3 class="product-card-name">
+      <a [routerLink]="['/product', product.id]">{{ product.name }}</a>
+    </h3>
+    <selling-rating [value]="product.averageRating" [count]="product.reviewCount"></selling-rating>
+
+    <div class="product-card-stock" [ngClass]="stock.cssClass">{{ stock.label }}</div>
+
+    <div class="product-card-footer">
+      <span class="product-card-price">{{ product.price | price }}</span>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        [disabled]="product.availableAmount === 0"
+        [attr.aria-label]="'Add to cart: ' + product.name"
+        (click)="addToCart()"
+      >
+        <selling-icon name="cart" [size]="16"></selling-icon>
+        {{ product.availableAmount === 0 ? 'Sold out' : 'Add' }}
+      </button>
+    </div>
+  </div>
+</article>

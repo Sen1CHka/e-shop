@@ -1,0 +1,39 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stars {
+  position: relative;
+  display: inline-flex;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.stars-empty {
+  display: inline-flex;
+  color: #d8dce5;
+}
+
+.stars-full {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: inline-flex;
+  overflow: hidden;
+  color: #f59e0b;
+}
+
+.rating-count,
+.rating-label {
+  font-size: 0.875rem;
+  color: #5b6474;
+}
+
+.star-button {
+  border: 0;
+  background: none;
+  padding: 0.15rem;
+  color: #f59e0b;
+  border-radius: 0.25rem;
+}
