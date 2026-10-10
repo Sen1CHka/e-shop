@@ -1,0 +1,19 @@
+image: gradle:alpine
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+    - chmod +x gradlew
+    - ./gradlew build
+  artifacts:
+    paths:
+      - build/reports/tests/
+
+test:
+  stage: test
+  script: ./gradlew check
