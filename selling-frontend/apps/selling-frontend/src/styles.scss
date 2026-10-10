@@ -1,0 +1,333 @@
+// Design tokens: Bootstrap is themed through its variables, the rest of the app uses the CSS variables below
+$primary: #3f3bd1;
+$secondary: #5b6474;
+$success: #15803d;
+$danger: #c81e1e;
+$warning: #b45309;
+$body-color: #1e293b;
+$body-bg: #f6f7fb;
+$border-color: #e3e7ee;
+$border-radius: 0.6rem;
+$border-radius-sm: 0.5rem;
+$border-radius-lg: 0.8rem;
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$headings-font-weight: 700;
+$link-decoration: none;
+$link-hover-decoration: underline;
+$input-btn-padding-y: 0.55rem;
+$input-btn-padding-x: 0.9rem;
+$btn-font-weight: 600;
+$form-label-font-weight: 600;
+$form-label-margin-bottom: 0.35rem;
+$form-text-margin-top: 0.3rem;
+$input-bg: #ffffff;
+$form-select-bg: #ffffff;
+$min-contrast-ratio: 4.5;
+$enable-negative-margins: true;
+
+@import './node_modules/bootstrap/scss/bootstrap.scss';
+
+:root {
+  --shop-surface: #ffffff;
+  --shop-border: #e3e7ee;
+  --shop-muted: #5b6474;
+  --shop-accent: #ff7e47;
+  --shop-primary-soft: #eeeeff;
+  --shop-radius: 1rem;
+  --shop-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 20px rgba(15, 23, 42, 0.05);
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+// Keyboard users always see where they are
+:focus-visible {
+  outline: 3px solid rgba($primary, 0.55);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 2000;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  background-color: $primary;
+  color: #ffffff;
+
+  &:focus {
+    top: 1rem;
+    color: #ffffff;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.btn-lg {
+  --bs-btn-padding-y: 0.8rem;
+  --bs-btn-padding-x: 1.4rem;
+  --bs-btn-font-size: 1.05rem;
+}
+
+.icon-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.6rem;
+  background: none;
+  color: var(--shop-muted);
+
+  &:hover {
+    background-color: #eef1f6;
+    color: $body-color;
+  }
+
+  &.danger:hover {
+    background-color: #fdecec;
+    color: $danger;
+  }
+}
+
+.link-button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: $primary;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.panel {
+  background-color: var(--shop-surface);
+  border: 1px solid var(--shop-border);
+  border-radius: var(--shop-radius);
+  box-shadow: var(--shop-shadow);
+  padding: 1.5rem;
+}
+
+.page-title {
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr));
+  gap: 1.25rem;
+}
+
+// Forms -----------------------------------------------------------------------
+
+.form-control.ng-invalid.ng-touched,
+.form-select.ng-invalid.ng-touched {
+  border-color: $danger;
+}
+
+.field-error {
+  margin-top: 0.3rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $danger;
+}
+
+.form-error {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid #f5c2c2;
+  background-color: #fdecec;
+  color: #8f1616;
+  font-weight: 500;
+}
+
+.notice {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid #c9d3f5;
+  background-color: var(--shop-primary-soft);
+  color: #2b2a8f;
+}
+
+// Option cards used for delivery, payment and addresses
+.choice {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 2px solid var(--shop-border);
+  border-radius: 0.8rem;
+  background-color: var(--shop-surface);
+  cursor: pointer;
+
+  &:hover {
+    border-color: #b9bdf0;
+  }
+
+  &.selected {
+    border-color: $primary;
+    background-color: var(--shop-primary-soft);
+  }
+
+  .form-check-input {
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+}
+
+// Status ----------------------------------------------------------------------
+
+.stock-ok {
+  color: $success;
+}
+
+.stock-low {
+  color: $warning;
+}
+
+.stock-out {
+  color: $danger;
+}
+
+.state-badge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background-color: #e8ebf1;
+  color: #364152;
+}
+
+.state-new {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.state-processing {
+  background-color: #fef3c7;
+  color: #8a4b08;
+}
+
+.state-shipped {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.state-delivered {
+  background-color: #dcfce7;
+  color: #14622f;
+}
+
+.state-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--shop-primary-soft);
+  color: $primary;
+}
+
+// Loading placeholders
+.skeleton {
+  border-radius: 0.8rem;
+  background: linear-gradient(90deg, #eceff4 25%, #f6f7fb 50%, #eceff4 75%);
+  background-size: 200% 100%;
+  animation: skeleton 1.2s infinite linear;
+}
+
+@keyframes skeleton {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+// Tables in the administration
+.data-table {
+  margin: 0;
+  vertical-align: middle;
+
+  th {
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--shop-muted);
+    white-space: nowrap;
+  }
+
+  td,
+  th {
+    padding: 0.75rem 0.9rem;
+  }
+}
+
+.thumb {
+  width: 3.5rem;
+  flex-shrink: 0;
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 0;
+}
+
+.summary-total {
+  margin-top: 0.5rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--shop-border);
+  font-size: 1.25rem;
+  font-weight: 700;
+}

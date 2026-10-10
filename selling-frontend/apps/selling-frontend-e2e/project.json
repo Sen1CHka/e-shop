@@ -1,0 +1,30 @@
+{
+  "name": "selling-frontend-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/selling-frontend-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/selling-frontend-e2e/cypress.config.ts",
+        "testingType": "e2e",
+        "devServerTarget": "selling-frontend:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "selling-frontend:serve:production"
+        },
+        "ci": {
+          "devServerTarget": "selling-frontend:serve-static"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["selling-frontend"]
+}
