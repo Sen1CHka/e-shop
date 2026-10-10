@@ -1,0 +1,150 @@
+<h1 class="page-title">Orders</h1>
+
+<form class="panel filter-bar" (ngSubmit)="load()">
+  <div>
+    <label for="filter-state" class="form-label">State</label>
+    <select id="filter-state" name="state" class="form-select" [(ngModel)]="filter.state" (ngModelChange)="load()">
+      <option [ngValue]="null">All states</option>
+      <option *ngFor="let state of states" [ngValue]="state.code">{{ state.label }}</option>
+    </select>
+  </div>
+  <div>
+    <label for="filter-user" class="form-label">Customer</label>
+    <input id="filter-user" name="user" type="search" class="form-control" placeholder="Name or username" [(ngModel)]="filter.user" />
+  </div>
+  <div>
+    <label for="filter-date" class="form-label">Created up to</label>
+    <input id="filter-date" name="dateTo" type="date" class="form-control" [(ngModel)]="filter.dateTo" (ngModelChange)="load()" />
+  </div>
+  <div class="filter-actions">
+    <button type="submit" class="btn btn-primary"><selling-icon name="search" [size]="16"></selling-icon> Filter</button>
+    <button *ngIf="isFiltered" type="button" class="btn btn-outline-secondary" (click)="clearFilter()">Clear</button>
+  </div>
+</form>
+
+<div class="panel p-0 mt-3">
+  <ng-container *ngIf="orders() as list; else loading">
+    <selling-empty-state
+      *ngIf="list.length === 0"
+      icon="package"
+      heading="No orders found"
+      [text]="isFiltered ? 'No order matches the filter.' : 'Orders of your customers will appear here.'"
+    >
+      <button *ngIf="isFiltered" type="button" class="btn btn-primary" (click)="clearFilter()">Clear filter</button>
+    </selling-empty-state>
+
+    <div class="table-responsive" *ngIf="list.length">
+      <table class="table table-hover data-table">
+        <caption class="visually-hidden">
+          Orders
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Created</th>
+            <th scope="col">Customer</th>
+            <th scope="col" class="text-end">Items</th>
+            <th scope="col" class="text-end">Total</th>
+            <th scope="col">State</th>
+            <th scope="col"><span class="visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of list; trackBy: trackById">
+            <td class="fw-semibold">#{{ order.id }}</td>
+            <td>{{ order.date | date : 'd MMM y, HH:mm' }}</td>
+            <td>
+              {{ order.realName }}
+              <div class="text-secondary small">{{ order.username }}</div>
+            </td>
+            <td class="text-end">{{ order.itemCount }}</td>
+            <td class="text-end fw-semibold">{{ order.totalPrice | price }}</td>
+            <td>
+              <label class="visually-hidden" [attr.for]="'state-' + order.id">State of order #{{ order.id }}</label>
+              <select
+                *ngIf="!isFinal(order); else finalState"
+                class="form-select form-select-sm state-select"
+                [id]="'state-' + order.id"
+                #stateSelect
+                (change)="changeState(order, stateSelect)"
+              >
+                <option *ngFor="let state of states" [value]="state.code" [selected]="state.code === order.state">
+                  {{ state.label }}
+                </option>
+              </select>
+              <ng-template #finalState><selling-order-state [state]="order.state"></selling-order-state></ng-template>
+            </td>
+            <td class="text-end">
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="detail.set(order)">Detail</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #loading><div class="skeleton m-3" style="height: 16rem"></div></ng-template>
+</div>
+
+<selling-dialog
+  [isVisible]="detail() !== null"
+  [dialogTitle]="'Order #' + (detail()?.id ?? '')"
+  [wide]="true"
+  (closeDialogEvent)="detail.set(null)"
+>
+  <ng-container *ngIf="detail() as order">
+    <div class="detail-meta">
+      <selling-order-state [state]="order.state"></selling-order-state>
+      <span>{{ order.date | date : 'd MMM y, HH:mm' }}</span>
+      <span>{{ order.realName }} ({{ order.username }})</span>
+    </div>
+
+    <table class="table data-table">
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col" class="text-end">Unit price</th>
+          <th scope="col" class="text-end">Qty</th>
+          <th scope="col" class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of order.items">
+          <td>{{ item.productName }}</td>
+          <td class="text-end">{{ item.unitPrice | price }}</td>
+          <td class="text-end">{{ item.quantity }}</td>
+          <td class="text-end">{{ item.lineTotal | price }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">{{ order.deliveryLabel }}</td>
+          <td class="text-end">{{ order.deliveryPrice | price }}</td>
+        </tr>
+        <tr>
+          <td colspan="3">{{ order.paymentLabel }}</td>
+          <td class="text-end">{{ order.paymentPrice | price }}</td>
+        </tr>
+        <tr class="fw-bold">
+          <td colspan="3">Total</td>
+          <td class="text-end">{{ order.totalPrice | price }}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="row g-3">
+      <div class="col-sm-6">
+        <h3 class="h6">Delivery address</h3>
+        <address class="mb-0">
+          {{ order.shipping.fullName }}<br />
+          {{ order.shipping.street }}<br />
+          {{ order.shipping.zipCode }} {{ order.shipping.city }}, {{ order.shipping.country }}<br />
+          {{ order.shipping.phone }}
+        </address>
+      </div>
+      <div class="col-sm-6" *ngIf="order.note">
+        <h3 class="h6">Customer note</h3>
+        <p class="mb-0">{{ order.note }}</p>
+      </div>
+    </div>
+  </ng-container>
+</selling-dialog>

@@ -1,0 +1,128 @@
+<h1 class="page-title">Dashboard</h1>
+
+<div *ngIf="failed()" class="form-error">
+  <selling-icon name="alert"></selling-icon>
+  <span>The statistics could not be loaded. <button type="button" class="link-button" (click)="load()">Try again</button></span>
+</div>
+
+<ng-container *ngIf="stats() as stats; else loading">
+  <div class="tiles">
+    <a class="tile panel" routerLink="/admin/orders">
+      <span class="tile-icon"><selling-icon name="credit-card"></selling-icon></span>
+      <span class="tile-label">Revenue</span>
+      <strong class="tile-value">{{ stats.revenue | price : true }}</strong>
+      <span class="tile-note">without cancelled orders</span>
+    </a>
+    <a class="tile panel" routerLink="/admin/orders">
+      <span class="tile-icon"><selling-icon name="package"></selling-icon></span>
+      <span class="tile-label">Orders</span>
+      <strong class="tile-value">{{ stats.orderCount }}</strong>
+      <span class="tile-note">{{ stats.ordersByState.NEW }} waiting to be processed</span>
+    </a>
+    <a class="tile panel" routerLink="/admin/products">
+      <span class="tile-icon"><selling-icon name="grid"></selling-icon></span>
+      <span class="tile-label">Products on sale</span>
+      <strong class="tile-value">{{ stats.productCount }}</strong>
+      <span class="tile-note">{{ stats.lowStock.length }} running low</span>
+    </a>
+    <a class="tile panel" routerLink="/admin/users">
+      <span class="tile-icon"><selling-icon name="users"></selling-icon></span>
+      <span class="tile-label">Registered users</span>
+      <strong class="tile-value">{{ stats.userCount }}</strong>
+      <span class="tile-note">customers and administrators</span>
+    </a>
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="panel" aria-labelledby="states-title">
+      <h2 id="states-title" class="h5 mb-3">Orders by state</h2>
+      <ul class="bars">
+        <li *ngFor="let state of states">
+          <a routerLink="/admin/orders" [queryParams]="{ state: state.code }">
+            <selling-order-state [state]="state.code"></selling-order-state>
+          </a>
+          <span class="bar" aria-hidden="true">
+            <span [style.width.%]="share(stats.ordersByState[state.code], stats.orderCount)"></span>
+          </span>
+          <strong>{{ stats.ordersByState[state.code] }}</strong>
+        </li>
+      </ul>
+    </section>
+
+    <section class="panel" aria-labelledby="top-title">
+      <h2 id="top-title" class="h5 mb-3">Best sellers</h2>
+      <p *ngIf="stats.topProducts.length === 0" class="text-secondary mb-0">Nothing has been sold yet.</p>
+      <ol class="top-list">
+        <li *ngFor="let product of stats.topProducts">
+          <span>{{ product.name }}</span>
+          <strong>{{ product.quantity }} sold</strong>
+        </li>
+      </ol>
+    </section>
+
+    <section class="panel wide" aria-labelledby="stock-title">
+      <div class="d-flex justify-content-between align-items-baseline gap-3 mb-2">
+        <h2 id="stock-title" class="h5 mb-0">Running low on stock</h2>
+        <a routerLink="/admin/products">All products</a>
+      </div>
+      <p *ngIf="stats.lowStock.length === 0" class="text-secondary mb-0">All products are well stocked.</p>
+      <div class="table-responsive" *ngIf="stats.lowStock.length">
+        <table class="table data-table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Category</th>
+              <th scope="col" class="text-end">Price</th>
+              <th scope="col" class="text-end">In stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of stats.lowStock">
+              <td>
+                <a routerLink="/admin/products" [queryParams]="{ q: product.name }" class="fw-semibold">{{ product.name }}</a>
+              </td>
+              <td>{{ product.categoryName }}</td>
+              <td class="text-end">{{ product.price | price }}</td>
+              <td class="text-end">
+                <strong [ngClass]="product.availableAmount === 0 ? 'stock-out' : 'stock-low'">
+                  {{ product.availableAmount === 0 ? 'Sold out' : product.availableAmount + ' pcs' }}
+                </strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel wide" aria-labelledby="recent-title">
+      <div class="d-flex justify-content-between align-items-baseline gap-3 mb-2">
+        <h2 id="recent-title" class="h5 mb-0">Latest orders</h2>
+        <a routerLink="/admin/orders">All orders</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table data-table">
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Date</th>
+              <th scope="col">Customer</th>
+              <th scope="col">State</th>
+              <th scope="col" class="text-end">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of stats.recentOrders">
+              <td><a routerLink="/admin/orders" [queryParams]="{ open: order.id }" class="fw-semibold">#{{ order.id }}</a></td>
+              <td>{{ order.date | date : 'd MMM y, HH:mm' }}</td>
+              <td>{{ order.realName }}</td>
+              <td><selling-order-state [state]="order.state"></selling-order-state></td>
+              <td class="text-end fw-semibold">{{ order.totalPrice | price }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</ng-container>
+
+<ng-template #loading><div class="skeleton" style="height: 24rem" *ngIf="!failed()"></div></ng-template>

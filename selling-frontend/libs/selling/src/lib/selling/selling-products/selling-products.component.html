@@ -1,0 +1,149 @@
+<div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3">
+  <h1 class="page-title mb-0">Products</h1>
+  <button type="button" class="btn btn-primary" (click)="open()">
+    <selling-icon name="plus" [size]="16"></selling-icon> Add product
+  </button>
+</div>
+
+<form class="panel filter-bar" (ngSubmit)="search()">
+  <div class="flex-grow-1">
+    <label for="product-search" class="form-label">Search</label>
+    <input id="product-search" name="q" type="search" class="form-control" placeholder="Name, brand or description" [(ngModel)]="query" />
+  </div>
+  <div>
+    <label for="product-category" class="form-label">Category</label>
+    <select id="product-category" name="category" class="form-select" [(ngModel)]="categoryId" (ngModelChange)="search()">
+      <option [ngValue]="null">All categories</option>
+      <option *ngFor="let category of categories()" [ngValue]="category.id">{{ category.name }}</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary"><selling-icon name="search" [size]="16"></selling-icon> Search</button>
+</form>
+
+<div class="panel p-0 mt-3">
+  <ng-container *ngIf="page() as result; else loading">
+    <selling-empty-state
+      *ngIf="result.totalElements === 0"
+      icon="grid"
+      heading="No products found"
+      text="Try a different search or add a new product."
+    >
+      <button type="button" class="btn btn-primary" (click)="open()">Add product</button>
+    </selling-empty-state>
+
+    <div class="table-responsive" *ngIf="result.totalElements > 0">
+      <table class="table table-hover data-table">
+        <caption class="visually-hidden">
+          Products
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Category</th>
+            <th scope="col" class="text-end">Price</th>
+            <th scope="col" class="text-end">Stock</th>
+            <th scope="col">Status</th>
+            <th scope="col"><span class="visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of result.content; trackBy: trackById" [class.row-hidden]="!product.active">
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <span class="thumb">
+                  <selling-product-image [name]="product.name" [imageUrl]="product.imageUrl" [icon]="product.categoryIcon">
+                  </selling-product-image>
+                </span>
+                <span>
+                  <strong>{{ product.name }}</strong>
+                  <div class="text-secondary small">{{ product.brand }}</div>
+                </span>
+              </div>
+            </td>
+            <td>{{ product.categoryName ?? '–' }}</td>
+            <td class="text-end fw-semibold">{{ product.price | price }}</td>
+            <td class="text-end">
+              <strong [ngClass]="stock(product).cssClass">{{ product.availableAmount }} pcs</strong>
+            </td>
+            <td>
+              <span class="state-badge" [class.state-delivered]="product.active">{{ product.active ? 'On sale' : 'Hidden' }}</span>
+            </td>
+            <td class="text-end text-nowrap">
+              <button type="button" class="icon-button" [attr.aria-label]="'Edit ' + product.name" title="Edit" (click)="open(product)">
+                <selling-icon name="edit" [size]="18"></selling-icon>
+              </button>
+              <button
+                *ngIf="product.active"
+                type="button"
+                class="icon-button danger"
+                [attr.aria-label]="'Remove ' + product.name + ' from the shop'"
+                title="Remove from the shop"
+                (click)="remove(product)"
+              >
+                <selling-icon name="trash" [size]="18"></selling-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="p-3" *ngIf="result.totalPages > 1">
+      <selling-pagination [page]="result.page" [totalPages]="result.totalPages" (pageChange)="load($event)"></selling-pagination>
+    </div>
+  </ng-container>
+  <ng-template #loading><div class="skeleton m-3" style="height: 20rem"></div></ng-template>
+</div>
+
+<selling-dialog
+  [isVisible]="isDialogVisible"
+  [dialogTitle]="editing ? 'Edit product' : 'New product'"
+  [wide]="true"
+  (closeDialogEvent)="isDialogVisible = false"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="row gx-3 gy-1">
+      <selling-field class="col-md-8" label="Name" for="product-name" [control]="form.controls.name">
+        <input id="product-name" type="text" class="form-control" formControlName="name" />
+      </selling-field>
+      <selling-field class="col-md-4" label="Brand" for="product-brand" [optional]="true" [control]="form.controls.brand">
+        <input id="product-brand" type="text" class="form-control" formControlName="brand" />
+      </selling-field>
+      <selling-field class="col-md-4" label="Category" for="product-category-field" [optional]="true" [control]="form.controls.categoryId">
+        <select id="product-category-field" class="form-select" formControlName="categoryId">
+          <option [ngValue]="null">No category</option>
+          <option *ngFor="let category of categories()" [ngValue]="category.id">{{ category.name }}</option>
+        </select>
+      </selling-field>
+      <selling-field class="col-md-4" label="Price (Kč)" for="product-price" [control]="form.controls.price">
+        <input id="product-price" type="number" min="0" step="0.01" class="form-control" formControlName="price" />
+      </selling-field>
+      <selling-field class="col-md-4" label="Pieces in stock" for="product-stock" [control]="form.controls.availableAmount">
+        <input id="product-stock" type="number" min="0" step="1" class="form-control" formControlName="availableAmount" />
+      </selling-field>
+      <selling-field
+        class="col-12"
+        label="Image address"
+        for="product-image"
+        hint="Link to a picture, e.g. https://... Without it the product shows the icon of its category."
+        [optional]="true"
+        [control]="form.controls.imageUrl"
+      >
+        <input id="product-image" type="url" class="form-control" formControlName="imageUrl" />
+      </selling-field>
+      <selling-field class="col-12" label="Description" for="product-description" [optional]="true" [control]="form.controls.description">
+        <textarea id="product-description" class="form-control" rows="4" formControlName="description"></textarea>
+      </selling-field>
+      <div class="col-12">
+        <div class="form-check form-switch">
+          <input id="product-active" type="checkbox" role="switch" class="form-check-input" formControlName="active" />
+          <label for="product-active" class="form-check-label">On sale – visible to customers in the shop</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <button type="button" class="btn btn-outline-secondary" (click)="isDialogVisible = false">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving">Save product</button>
+    </div>
+  </form>
+</selling-dialog>

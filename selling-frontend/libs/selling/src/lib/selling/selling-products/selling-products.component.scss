@@ -1,0 +1,18 @@
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  padding: 1.1rem 1.25rem;
+}
+
+.row-hidden {
+  td {
+    background-color: #fafbfd;
+  }
+
+  .thumb,
+  strong:first-child {
+    opacity: 0.55;
+  }
+}

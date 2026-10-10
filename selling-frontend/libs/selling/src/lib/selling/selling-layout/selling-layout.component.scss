@@ -1,0 +1,135 @@
+:host {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1.5rem;
+  background-color: #111827;
+  color: #ffffff;
+}
+
+.admin-logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  text-decoration: none;
+
+  span {
+    color: var(--shop-accent);
+  }
+
+  small {
+    margin-left: 0.3rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background-color: #374151;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-user {
+  padding-inline: 0.5rem;
+  color: #cbd2dc;
+}
+
+.admin-header-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: none;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #374151;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+.admin-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+}
+
+.admin-nav {
+  padding: 1rem 0.75rem;
+  background-color: #ffffff;
+  border-right: 1px solid var(--shop-border);
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.65rem 0.8rem;
+    margin-bottom: 0.15rem;
+    border-radius: 0.6rem;
+    color: #1e293b;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #eef1f6;
+    }
+
+    &.active {
+      background-color: var(--shop-primary-soft);
+      color: var(--bs-primary);
+      font-weight: 700;
+    }
+  }
+}
+
+.admin-main {
+  padding: 1.75rem clamp(1rem, 3vw, 2.5rem) 3rem;
+}
+
+@media (max-width: 767.98px) {
+  .admin-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+  }
+
+  .admin-nav {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--shop-border);
+
+    a {
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+
+  .admin-user {
+    display: none;
+  }
+}
