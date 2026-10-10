@@ -1,0 +1,57 @@
+<div class="auth panel">
+  <h1 class="page-title mb-1">Sign in</h1>
+  <p class="auth-subtitle">
+    {{ target.startsWith('/checkout') ? 'Sign in to finish your order. Your cart is waiting.' : 'Welcome back.' }}
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div *ngIf="error" class="form-error mb-3" role="alert">
+      <selling-icon name="alert"></selling-icon>
+      <span>{{ error }}</span>
+    </div>
+
+    <selling-field label="Username" for="username" [control]="form.controls.username" class="mb-1">
+      <input id="username" type="text" class="form-control" formControlName="username" autocomplete="username" autofocus />
+    </selling-field>
+
+    <selling-field label="Password" for="password" [control]="form.controls.password" class="mb-2">
+      <div class="password-field">
+        <input
+          id="password"
+          #passwordInput
+          [type]="showPassword ? 'text' : 'password'"
+          class="form-control"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <button
+          type="button"
+          class="icon-button"
+          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          [attr.aria-pressed]="showPassword"
+          (click)="showPassword = !showPassword"
+        >
+          <selling-icon [name]="showPassword ? 'eye-off' : 'eye'"></selling-icon>
+        </button>
+      </div>
+    </selling-field>
+
+    <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="isSubmitting">
+      <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      Sign in
+    </button>
+  </form>
+
+  <p class="auth-switch">
+    New here? <a routerLink="/register" [queryParams]="{ returnUrl: target }">Create an account</a>
+  </p>
+
+  <div class="notice demo-accounts">
+    <selling-icon name="info"></selling-icon>
+    <span>
+      Demo accounts:
+      <button type="button" class="link-button" (click)="fill('jana', 'jana123')">customer</button> or
+      <button type="button" class="link-button" (click)="fill('admin', 'admin123')">administrator</button>
+    </span>
+  </div>
+</div>

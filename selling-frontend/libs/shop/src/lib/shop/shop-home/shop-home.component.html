@@ -1,0 +1,73 @@
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-kicker">New season, new gear</span>
+    <h1>Electronics you will actually use</h1>
+    <p>Laptops, phones, audio and smart home picked by people who test everything first. In stock today, at your door tomorrow.</p>
+    <div class="d-flex gap-2 flex-wrap">
+      <a routerLink="/catalog" class="btn btn-light btn-lg">
+        Browse all products <selling-icon name="arrow-right"></selling-icon>
+      </a>
+      <a routerLink="/catalog" [queryParams]="{ max: 1000, sort: 'price_asc' }" class="btn btn-outline-light btn-lg">
+        Deals under 1 000 Kč
+      </a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">💻<span>🎧</span><span>📱</span></div>
+</section>
+
+<section class="benefits" aria-label="Why shop with us">
+  <div><selling-icon name="truck"></selling-icon><span><strong>Next-day delivery</strong>Order by 4 pm on working days</span></div>
+  <div><selling-icon name="package"></selling-icon><span><strong>Free store pickup</strong>Ready within 24 hours</span></div>
+  <div><selling-icon name="refresh"></selling-icon><span><strong>30-day returns</strong>No questions asked</span></div>
+  <div><selling-icon name="shield"></selling-icon><span><strong>2-year warranty</strong>On every product</span></div>
+</section>
+
+<section class="home-section" aria-labelledby="categories-title">
+  <div class="home-section-header">
+    <h2 id="categories-title" class="section-title">Shop by category</h2>
+  </div>
+  <div class="category-grid">
+    <a *ngFor="let category of categories()" class="category-tile" routerLink="/catalog" [queryParams]="{ category: category.id }">
+      <span class="category-tile-icon" aria-hidden="true">{{ category.icon }}</span>
+      <span class="category-tile-name">{{ category.name }}</span>
+      <span class="category-tile-count">{{ category.productCount }} products</span>
+    </a>
+  </div>
+</section>
+
+<section class="home-section" aria-labelledby="new-title">
+  <div class="home-section-header">
+    <h2 id="new-title" class="section-title">New arrivals</h2>
+    <a routerLink="/catalog" [queryParams]="{ sort: 'newest' }">Show all <selling-icon name="arrow-right" [size]="16"></selling-icon></a>
+  </div>
+  <div class="product-grid">
+    <ng-container *ngIf="newest() as products; else loading">
+      <selling-product-card *ngFor="let product of products" [product]="product"></selling-product-card>
+    </ng-container>
+  </div>
+</section>
+
+<section class="home-section" aria-labelledby="budget-title" *ngIf="budget()?.length">
+  <div class="home-section-header">
+    <h2 id="budget-title" class="section-title">Small prices, big help</h2>
+    <a routerLink="/catalog" [queryParams]="{ max: 1000, sort: 'price_asc' }">
+      Show all <selling-icon name="arrow-right" [size]="16"></selling-icon>
+    </a>
+  </div>
+  <div class="product-grid">
+    <selling-product-card *ngFor="let product of budget()" [product]="product"></selling-product-card>
+  </div>
+</section>
+
+<ng-template #loading>
+  <ng-container *ngIf="!failed(); else loadError">
+    <div *ngFor="let placeholder of placeholders" class="skeleton product-skeleton"></div>
+  </ng-container>
+</ng-template>
+
+<ng-template #loadError>
+  <div class="form-error load-error">
+    <selling-icon name="alert"></selling-icon>
+    <span>The products could not be loaded. <button type="button" class="link-button" (click)="load()">Try again</button></span>
+  </div>
+</ng-template>

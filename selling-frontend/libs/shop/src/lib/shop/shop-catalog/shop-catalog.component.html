@@ -1,0 +1,145 @@
+<nav aria-label="Breadcrumb" class="breadcrumbs">
+  <a routerLink="/">Home</a>
+  <selling-icon name="chevron-right" [size]="14"></selling-icon>
+  <ng-container *ngIf="category() as current; else allProducts">
+    <a routerLink="/catalog">Products</a>
+    <selling-icon name="chevron-right" [size]="14"></selling-icon>
+    <span aria-current="page">{{ current.name }}</span>
+  </ng-container>
+  <ng-template #allProducts><span aria-current="page">Products</span></ng-template>
+</nav>
+
+<h1 class="page-title">
+  <ng-container *ngIf="filter().q as term; else plainTitle">Results for "{{ term }}"</ng-container>
+  <ng-template #plainTitle>{{ category()?.name ?? 'All products' }}</ng-template>
+</h1>
+
+<div class="catalog">
+  <aside class="filters panel" [class.open]="filtersOpen" aria-label="Filters">
+    <div class="filters-header">
+      <h2 class="h6 mb-0">Filters</h2>
+      <button type="button" class="icon-button filters-close" aria-label="Close filters" (click)="filtersOpen = false">
+        <selling-icon name="x"></selling-icon>
+      </button>
+    </div>
+
+    <fieldset>
+      <legend>Category</legend>
+      <ul class="category-list">
+        <li>
+          <a routerLink="/catalog" [queryParams]="{ category: null, page: null }" queryParamsHandling="merge" [class.active]="!filter().category">
+            All categories
+          </a>
+        </li>
+        <li *ngFor="let item of categories()">
+          <a
+            routerLink="/catalog"
+            [queryParams]="{ category: item.id, page: null }"
+            queryParamsHandling="merge"
+            [class.active]="filter().category === item.id"
+          >
+            <span><span aria-hidden="true">{{ item.icon }}</span> {{ item.name }}</span>
+            <span class="category-count">{{ item.productCount }}</span>
+          </a>
+        </li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Price (Kč)</legend>
+      <form class="price-filter" (ngSubmit)="applyPrice()">
+        <div>
+          <label for="min-price" class="visually-hidden">Minimum price</label>
+          <input id="min-price" name="min" type="number" min="0" class="form-control" placeholder="From" [(ngModel)]="minPrice" />
+        </div>
+        <span aria-hidden="true">–</span>
+        <div>
+          <label for="max-price" class="visually-hidden">Maximum price</label>
+          <input id="max-price" name="max" type="number" min="0" class="form-control" placeholder="To" [(ngModel)]="maxPrice" />
+        </div>
+        <button type="submit" class="btn btn-outline-primary">Apply</button>
+      </form>
+      <div *ngIf="priceError" class="field-error" role="alert">{{ priceError }}</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Availability</legend>
+      <div class="form-check">
+        <input
+          id="in-stock"
+          type="checkbox"
+          class="form-check-input"
+          [checked]="filter().stock"
+          (change)="update({ stock: filter().stock ? null : 1 })"
+        />
+        <label for="in-stock" class="form-check-label">In stock only</label>
+      </div>
+    </fieldset>
+
+    <button *ngIf="chips().length" type="button" class="btn btn-outline-secondary w-100" (click)="clearAll()">
+      Clear all filters
+    </button>
+  </aside>
+
+  <section class="results" aria-label="Products">
+    <div class="results-toolbar">
+      <button type="button" class="btn btn-outline-primary filters-toggle" (click)="filtersOpen = true">
+        <selling-icon name="filter" [size]="16"></selling-icon> Filters
+        <span *ngIf="chips().length as count" class="badge text-bg-primary">{{ count }}</span>
+      </button>
+
+      <p class="results-count" role="status">
+        <ng-container *ngIf="page() as result">
+          <strong>{{ result.totalElements }}</strong> {{ result.totalElements === 1 ? 'product' : 'products' }}
+        </ng-container>
+      </p>
+
+      <div class="sort">
+        <label for="sort">Sort by</label>
+        <select id="sort" class="form-select" [ngModel]="filter().sort" (ngModelChange)="update({ sort: $event === 'newest' ? null : $event })">
+          <option *ngFor="let option of sortOptions" [value]="option.code">{{ option.label }}</option>
+        </select>
+      </div>
+    </div>
+
+    <ul *ngIf="chips().length" class="chips" aria-label="Active filters">
+      <li *ngFor="let chip of chips()">
+        <button type="button" class="chip" [attr.aria-label]="'Remove filter: ' + chip.label" (click)="update(chip.clear)">
+          {{ chip.label }} <selling-icon name="x" [size]="14"></selling-icon>
+        </button>
+      </li>
+    </ul>
+
+    <div *ngIf="failed()" class="form-error">
+      <selling-icon name="alert"></selling-icon>
+      <span>The products could not be loaded. <button type="button" class="link-button" (click)="load()">Try again</button></span>
+    </div>
+
+    <ng-container *ngIf="page() as result; else loading">
+      <div class="product-grid" [class.is-loading]="isLoading()">
+        <selling-product-card *ngFor="let product of result.content; trackBy: trackById" [product]="product"></selling-product-card>
+      </div>
+
+      <div class="panel" *ngIf="result.totalElements === 0">
+        <selling-empty-state
+          icon="search"
+          heading="No products match your filters"
+          text="Try a different search term or remove some of the filters."
+        >
+          <button type="button" class="btn btn-primary" (click)="clearAll()">Clear all filters</button>
+        </selling-empty-state>
+      </div>
+
+      <div class="mt-4">
+        <selling-pagination [page]="result.page" [totalPages]="result.totalPages" (pageChange)="update({ page: $event || null }, false)">
+        </selling-pagination>
+      </div>
+    </ng-container>
+
+    <ng-template #loading>
+      <div class="product-grid" *ngIf="!failed()">
+        <div *ngFor="let placeholder of placeholders" class="skeleton product-skeleton"></div>
+      </div>
+    </ng-template>
+  </section>
+</div>

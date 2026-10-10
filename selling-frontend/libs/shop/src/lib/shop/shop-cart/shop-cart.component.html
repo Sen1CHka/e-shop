@@ -1,0 +1,74 @@
+<h1 class="page-title">Shopping cart</h1>
+
+<div class="panel" *ngIf="cart.isEmpty(); else filled">
+  <selling-empty-state icon="cart" heading="Your cart is empty" text="Add something you like and it will wait for you here.">
+    <a routerLink="/catalog" class="btn btn-primary">Browse products</a>
+  </selling-empty-state>
+</div>
+
+<ng-template #filled>
+  <div *ngIf="changes().length" class="notice mb-3" role="status">
+    <selling-icon name="info"></selling-icon>
+    <div>
+      <strong>We have updated your cart to match our stock:</strong>
+      <ul class="mb-0 ps-3">
+        <li *ngFor="let change of changes()">
+          {{ change.name }} –
+          {{ change.reason === 'removed' ? 'sold out, removed from the cart' : 'quantity lowered to what is left in stock' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cart-layout">
+    <ul class="cart-items panel" aria-label="Products in the cart">
+      <li *ngFor="let item of cart.items(); let index = index; trackBy: trackById" class="cart-item">
+        <a class="thumb cart-thumb" [routerLink]="['/product', item.productId]" tabindex="-1" aria-hidden="true">
+          <selling-product-image [name]="item.name" [imageUrl]="item.imageUrl" [icon]="item.categoryIcon"></selling-product-image>
+        </a>
+        <div class="cart-item-main">
+          <a class="cart-item-name" [routerLink]="['/product', item.productId]">{{ item.name }}</a>
+          <div class="cart-item-unit">{{ item.price | price }} / pc</div>
+          <div *ngIf="item.quantity >= item.availableAmount" class="stock-low cart-item-limit">
+            That is all we have in stock
+          </div>
+        </div>
+        <selling-quantity
+          [value]="item.quantity"
+          [max]="item.availableAmount"
+          [label]="'Quantity of ' + item.name"
+          (valueChange)="cart.setQuantity(item.productId, $event)"
+        ></selling-quantity>
+        <div class="cart-item-total">{{ item.price * item.quantity | price }}</div>
+        <button type="button" class="icon-button danger" [attr.aria-label]="'Remove ' + item.name + ' from the cart'" (click)="remove(item, index)">
+          <selling-icon name="trash"></selling-icon>
+        </button>
+      </li>
+    </ul>
+
+    <aside class="panel cart-summary" aria-label="Order summary">
+      <h2 class="h5 mb-3">Summary</h2>
+      <div class="summary-row">
+        <span>{{ cart.count() }} {{ cart.count() === 1 ? 'item' : 'items' }}</span>
+        <span>{{ cart.total() | price }}</span>
+      </div>
+      <div class="summary-row text-secondary">
+        <span>Delivery</span>
+        <span>chosen in the next step</span>
+      </div>
+      <div class="summary-row summary-total">
+        <span>Total</span>
+        <span>{{ cart.total() | price }}</span>
+      </div>
+      <a routerLink="/checkout" class="btn btn-primary btn-lg w-100 mt-3">
+        Continue to checkout <selling-icon name="arrow-right"></selling-icon>
+      </a>
+      <p *ngIf="!auth.isLoggedIn()" class="cart-login-note">
+        You will be asked to sign in or create an account. Your cart stays as it is.
+      </p>
+      <a routerLink="/catalog" class="btn btn-link w-100 mt-1">
+        <selling-icon name="arrow-left" [size]="16"></selling-icon> Continue shopping
+      </a>
+    </aside>
+  </div>
+</ng-template>

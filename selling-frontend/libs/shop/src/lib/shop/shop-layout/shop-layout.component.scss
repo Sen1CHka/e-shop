@@ -1,0 +1,261 @@
+:host {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.shop-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--shop-border);
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-block: 0.85rem;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #1e293b;
+  text-decoration: none;
+
+  span {
+    color: var(--shop-accent);
+  }
+}
+
+.search {
+  flex: 1;
+  display: flex;
+  max-width: 36rem;
+  margin-inline: auto;
+
+  .form-control {
+    border-radius: 0.6rem 0 0 0.6rem;
+  }
+
+  .btn {
+    border-radius: 0 0.6rem 0.6rem 0;
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.header-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.7rem;
+  border: 0;
+  border-radius: 0.6rem;
+  background: none;
+  color: #1e293b;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &.active {
+    background-color: #eef1f6;
+  }
+}
+
+.header-action-icon {
+  position: relative;
+  display: inline-flex;
+
+  // The badge sticks out of the icon, the label must not end up under it
+  &:has(.count-badge) {
+    margin-right: 0.6rem;
+  }
+}
+
+.count-badge {
+  position: absolute;
+  top: -0.55rem;
+  right: -0.65rem;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding-inline: 0.3rem;
+  border-radius: 999px;
+  background-color: var(--bs-primary);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2rem;
+  text-align: center;
+}
+
+.cart-action {
+  background-color: var(--shop-primary-soft);
+  color: var(--bs-primary);
+
+  &:hover,
+  &.active {
+    background-color: #dfdffb;
+  }
+}
+
+.account-menu {
+  position: relative;
+}
+
+.account-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  width: 16rem;
+  padding: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid var(--shop-border);
+  border-radius: 0.8rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+
+  a,
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: none;
+    color: #1e293b;
+    text-align: left;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #eef1f6;
+    }
+  }
+
+  .admin-link {
+    color: var(--bs-primary);
+    font-weight: 600;
+  }
+}
+
+.account-dropdown-user {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.7rem 0.7rem;
+  margin-bottom: 0.3rem;
+  border-bottom: 1px solid var(--shop-border);
+
+  span {
+    font-size: 0.875rem;
+    color: var(--shop-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.category-nav {
+  border-top: 1px solid var(--shop-border);
+  background-color: #ffffff;
+}
+
+.category-nav-inner {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding-block: 0.4rem;
+
+  a {
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    color: #364152;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: #eef1f6;
+    }
+
+    &.active {
+      background-color: var(--bs-primary);
+      color: #ffffff;
+    }
+  }
+}
+
+.shop-main {
+  flex: 1;
+  padding-block: 1.75rem 3rem;
+  outline: none;
+}
+
+.shop-footer {
+  background-color: #111827;
+  color: #cbd2dc;
+  padding-block: 2.5rem;
+
+  .logo {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  a {
+    display: block;
+    padding-block: 0.2rem;
+    color: #cbd2dc;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+}
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 767.98px) {
+  .header-main {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+
+  .header-action-label {
+    display: none;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+}

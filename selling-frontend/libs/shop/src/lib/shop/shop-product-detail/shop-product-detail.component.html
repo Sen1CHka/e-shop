@@ -1,0 +1,159 @@
+<ng-container *ngIf="product() as product; else loadingOrMissing">
+  <nav aria-label="Breadcrumb" class="breadcrumbs">
+    <a routerLink="/">Home</a>
+    <selling-icon name="chevron-right" [size]="14"></selling-icon>
+    <a routerLink="/catalog">Products</a>
+    <ng-container *ngIf="product.categoryId">
+      <selling-icon name="chevron-right" [size]="14"></selling-icon>
+      <a routerLink="/catalog" [queryParams]="{ category: product.categoryId }">{{ product.categoryName }}</a>
+    </ng-container>
+    <selling-icon name="chevron-right" [size]="14"></selling-icon>
+    <span aria-current="page">{{ product.name }}</span>
+  </nav>
+
+  <div class="detail panel">
+    <div class="detail-image">
+      <selling-product-image [name]="product.name" [imageUrl]="product.imageUrl" [icon]="product.categoryIcon">
+      </selling-product-image>
+    </div>
+
+    <div class="detail-info">
+      <div class="detail-brand" *ngIf="product.brand">{{ product.brand }}</div>
+      <h1 class="detail-name">{{ product.name }}</h1>
+
+      <button type="button" class="rating-link" (click)="scrollToReviews()">
+        <selling-rating [value]="product.averageRating" [count]="product.reviewCount" [size]="18"></selling-rating>
+      </button>
+
+      <p class="detail-description">{{ product.description }}</p>
+
+      <div class="detail-price">{{ product.price | price }}</div>
+      <div class="detail-vat">incl. VAT</div>
+
+      <ng-container *ngIf="product.active; else unavailable">
+        <div class="detail-stock" [ngClass]="stock(product).cssClass">
+          <selling-icon [name]="product.availableAmount > 0 ? 'check-circle' : 'alert'" [size]="18"></selling-icon>
+          {{ stock(product).label }}
+          <span *ngIf="product.availableAmount > lowStockLimit" class="text-secondary fw-normal">
+            ({{ product.availableAmount }} pcs)
+          </span>
+        </div>
+
+        <div class="detail-actions" *ngIf="product.availableAmount > 0">
+          <selling-quantity [value]="quantity" [max]="product.availableAmount" (valueChange)="quantity = $event"></selling-quantity>
+          <button type="button" class="btn btn-primary btn-lg flex-grow-1" (click)="addToCart(product)">
+            <selling-icon name="cart"></selling-icon> Add to cart
+          </button>
+        </div>
+        <div *ngIf="inCart(product) as count" class="in-cart-note">
+          <selling-icon name="check" [size]="16"></selling-icon>
+          {{ count }} {{ count === 1 ? 'piece' : 'pieces' }} in your cart. <a routerLink="/cart">Show cart</a>
+        </div>
+      </ng-container>
+      <ng-template #unavailable>
+        <div class="form-error mt-3">
+          <selling-icon name="alert"></selling-icon>
+          <span>This product is no longer sold. <a routerLink="/catalog">Browse similar products</a></span>
+        </div>
+      </ng-template>
+
+      <button type="button" class="favorite-toggle" [attr.aria-pressed]="isFavorite(product)" (click)="favorites.toggle(product)">
+        <selling-icon name="heart" [filled]="isFavorite(product)"></selling-icon>
+        {{ isFavorite(product) ? 'Saved in favourites' : 'Save to favourites' }}
+      </button>
+
+      <ul class="detail-benefits">
+        <li><selling-icon name="truck" [size]="18"></selling-icon> Delivery tomorrow if you order by 4 pm</li>
+        <li><selling-icon name="package" [size]="18"></selling-icon> Free pickup at our Prague store</li>
+        <li><selling-icon name="refresh" [size]="18"></selling-icon> 30 days to return the goods</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="panel reviews" id="reviews" #reviewsSection tabindex="-1" aria-labelledby="reviews-title">
+    <h2 id="reviews-title" class="section-title mb-3">Customer reviews</h2>
+
+    <div class="reviews-layout">
+      <div class="review-form">
+        <ng-container *ngIf="auth.isLoggedIn(); else signInToReview">
+          <h3 class="h6">{{ myReview() ? 'Your review' : 'Write a review' }}</h3>
+          <form (ngSubmit)="saveReview(product)">
+            <selling-rating [editable]="true" [size]="26" [value]="rating" (valueChange)="rating = $event; ratingMissing = false">
+            </selling-rating>
+            <div *ngIf="ratingMissing" class="field-error" role="alert">Choose the number of stars first</div>
+            <label for="review-comment" class="form-label mt-3">
+              Your experience <span class="text-secondary fw-normal">(optional)</span>
+            </label>
+            <textarea
+              id="review-comment"
+              name="comment"
+              class="form-control"
+              rows="4"
+              maxlength="2000"
+              placeholder="What do you like or dislike about the product?"
+              [(ngModel)]="comment"
+            ></textarea>
+            <div class="d-flex gap-2 mt-3 flex-wrap">
+              <button type="submit" class="btn btn-primary" [disabled]="isSavingReview">
+                {{ myReview() ? 'Update review' : 'Publish review' }}
+              </button>
+              <button *ngIf="myReview() as mine" type="button" class="btn btn-outline-danger" (click)="deleteReview(product, mine)">
+                Delete
+              </button>
+            </div>
+          </form>
+        </ng-container>
+        <ng-template #signInToReview>
+          <div class="notice">
+            <selling-icon name="info"></selling-icon>
+            <span>
+              Do you own this product?
+              <a routerLink="/login" [queryParams]="{ returnUrl: '/product/' + product.id }">Sign in</a> to share your experience.
+            </span>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="review-list">
+        <ng-container *ngIf="reviews() as list">
+          <p *ngIf="list.length === 0" class="text-secondary mb-0">
+            Nobody has reviewed this product yet. Be the first one.
+          </p>
+          <article *ngFor="let review of list" class="review">
+            <header>
+              <strong>{{ review.realName }}</strong>
+              <span class="badge text-bg-light" *ngIf="review.username === auth.user()?.username">You</span>
+              <time [attr.datetime]="review.createdAt">{{ review.createdAt | date : 'd MMM y' }}</time>
+            </header>
+            <selling-rating [value]="review.rating"></selling-rating>
+            <p *ngIf="review.comment">{{ review.comment }}</p>
+            <button
+              *ngIf="auth.isAdmin() && review.username !== auth.user()?.username"
+              type="button"
+              class="link-button text-danger"
+              (click)="deleteReview(product, review)"
+            >
+              Delete review
+            </button>
+          </article>
+        </ng-container>
+      </div>
+    </div>
+  </section>
+
+  <section class="related" *ngIf="related().length" aria-labelledby="related-title">
+    <h2 id="related-title" class="section-title mb-3">More from {{ product.categoryName }}</h2>
+    <div class="product-grid">
+      <selling-product-card *ngFor="let item of related()" [product]="item"></selling-product-card>
+    </div>
+  </section>
+</ng-container>
+
+<ng-template #loadingOrMissing>
+  <div class="panel" *ngIf="notFound(); else loading">
+    <selling-empty-state icon="search" heading="This product does not exist" text="It may have been removed from our offer.">
+      <a routerLink="/catalog" class="btn btn-primary">Browse products</a>
+    </selling-empty-state>
+  </div>
+  <ng-template #loading><div class="skeleton detail-skeleton"></div></ng-template>
+</ng-template>

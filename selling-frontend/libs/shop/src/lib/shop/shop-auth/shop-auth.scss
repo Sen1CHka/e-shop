@@ -1,0 +1,38 @@
+.auth {
+  max-width: 28rem;
+  margin: 1rem auto;
+}
+
+.auth-subtitle {
+  color: var(--shop-muted);
+  margin-bottom: 1.5rem;
+}
+
+.password-field {
+  position: relative;
+
+  .form-control {
+    padding-right: 3rem;
+  }
+
+  .icon-button {
+    position: absolute;
+    right: 0.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.auth-switch {
+  margin: 1.5rem 0 0;
+  text-align: center;
+}
+
+.demo-accounts {
+  margin-top: 1rem;
+  font-size: 0.9375rem;
+
+  button {
+    font-weight: 600;
+  }
+}

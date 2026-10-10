@@ -1,0 +1,101 @@
+<a routerLink="/account/orders" class="back-link">
+  <selling-icon name="arrow-left" [size]="16"></selling-icon> All orders
+</a>
+
+<ng-container *ngIf="order() as order; else loadingOrMissing">
+  <div *ngIf="isPlaced" class="thank-you panel" role="status">
+    <span class="thank-you-icon"><selling-icon name="check" [size]="28"></selling-icon></span>
+    <div>
+      <h1 class="h3 mb-1">Thank you, your order has been placed</h1>
+      <p class="mb-0">We are already working on it. You can follow its progress on this page or in My orders.</p>
+    </div>
+  </div>
+
+  <div class="order-title">
+    <h1 class="page-title mb-0" *ngIf="!isPlaced; else placedTitle">Order #{{ order.id }}</h1>
+    <ng-template #placedTitle><h2 class="page-title mb-0">Order #{{ order.id }}</h2></ng-template>
+    <selling-order-state [state]="order.state"></selling-order-state>
+    <span class="text-secondary">placed on {{ order.date | date : 'd MMM y, HH:mm' }}</span>
+  </div>
+
+  <section class="panel mb-3" aria-label="Order progress">
+    <ol class="timeline" *ngIf="order.state !== 'CANCELLED'; else cancelled">
+      <li *ngFor="let state of flow; let index = index" [class.done]="index <= reached(order)" [class.current]="index === reached(order)">
+        <span class="timeline-dot"><selling-icon *ngIf="index <= reached(order)" name="check" [size]="14"></selling-icon></span>
+        <strong>{{ info(state).label }}</strong>
+        <span>{{ info(state).description }}</span>
+      </li>
+    </ol>
+    <ng-template #cancelled>
+      <div class="form-error mb-0">
+        <selling-icon name="alert"></selling-icon>
+        <span>This order was cancelled. Nothing will be delivered and the goods are back in stock.</span>
+      </div>
+    </ng-template>
+  </section>
+
+  <div class="order-layout">
+    <section class="panel" aria-labelledby="items-title">
+      <h2 id="items-title" class="h5 mb-3">Products</h2>
+      <ul class="order-items">
+        <li *ngFor="let item of order.items">
+          <a class="thumb" [routerLink]="['/product', item.productId]" tabindex="-1" aria-hidden="true">
+            <selling-product-image [name]="item.productName" [imageUrl]="item.imageUrl" [icon]="item.categoryIcon">
+            </selling-product-image>
+          </a>
+          <span class="flex-grow-1">
+            <a [routerLink]="['/product', item.productId]" class="fw-semibold text-body">{{ item.productName }}</a><br />
+            <span class="text-secondary">{{ item.quantity }} × {{ item.unitPrice | price }}</span>
+          </span>
+          <strong>{{ item.lineTotal | price }}</strong>
+        </li>
+      </ul>
+
+      <div class="order-totals">
+        <div class="summary-row"><span>Products</span><span>{{ order.itemsPrice | price }}</span></div>
+        <div class="summary-row"><span>{{ order.deliveryLabel }}</span><span>{{ order.deliveryPrice | price }}</span></div>
+        <div class="summary-row"><span>{{ order.paymentLabel }}</span><span>{{ order.paymentPrice | price }}</span></div>
+        <div class="summary-row summary-total"><span>Total</span><span>{{ order.totalPrice | price }}</span></div>
+      </div>
+    </section>
+
+    <aside>
+      <section class="panel mb-3" aria-labelledby="address-title">
+        <h2 id="address-title" class="h6">Delivery address</h2>
+        <address class="mb-0">
+          {{ order.shipping.fullName }}<br />
+          {{ order.shipping.street }}<br />
+          {{ order.shipping.zipCode }} {{ order.shipping.city }}<br />
+          {{ order.shipping.country }}<br />
+          {{ order.shipping.phone }}
+        </address>
+      </section>
+
+      <section class="panel mb-3" *ngIf="order.note" aria-labelledby="note-title">
+        <h2 id="note-title" class="h6">Your note</h2>
+        <p class="mb-0">{{ order.note }}</p>
+      </section>
+
+      <div class="d-grid gap-2">
+        <button type="button" class="btn btn-outline-primary" (click)="orderAgain(order)">
+          <selling-icon name="refresh" [size]="16"></selling-icon> Order again
+        </button>
+        <button *ngIf="canCancel(order)" type="button" class="btn btn-outline-danger" [disabled]="isCancelling" (click)="cancel(order)">
+          Cancel order
+        </button>
+        <p *ngIf="order.state === 'SHIPPED'" class="cancel-note">
+          The order is already on its way and cannot be cancelled. You can return the goods within 30 days.
+        </p>
+      </div>
+    </aside>
+  </div>
+</ng-container>
+
+<ng-template #loadingOrMissing>
+  <div class="panel" *ngIf="notFound(); else loading">
+    <selling-empty-state icon="search" heading="We could not find this order" text="It may belong to a different account.">
+      <a routerLink="/account/orders" class="btn btn-primary">Show my orders</a>
+    </selling-empty-state>
+  </div>
+  <ng-template #loading><div class="skeleton order-skeleton"></div></ng-template>
+</ng-template>

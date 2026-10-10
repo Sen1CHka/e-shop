@@ -1,0 +1,193 @@
+<h1 class="page-title">Checkout</h1>
+
+<ol class="steps" aria-label="Checkout progress">
+  <li *ngFor="let item of steps; let index = index" [class.current]="step() === index + 1" [class.done]="step() > index + 1">
+    <button
+      type="button"
+      [disabled]="step() <= index + 1"
+      [attr.aria-current]="step() === index + 1 ? 'step' : null"
+      (click)="goTo(index + 1)"
+    >
+      <span class="step-number">
+        <selling-icon *ngIf="step() > index + 1; else number" name="check" [size]="16"></selling-icon>
+        <ng-template #number>{{ index + 1 }}</ng-template>
+      </span>
+      <span class="step-label">{{ item }}</span>
+    </button>
+  </li>
+</ol>
+
+<div class="checkout-layout">
+  <div class="checkout-main">
+    <!-- Step 1 -->
+    <section class="panel" *ngIf="step() === 1" aria-labelledby="step-1-title">
+      <h2 id="step-1-title" class="h4 mb-3" tabindex="-1" #stepTitle>Where should we deliver?</h2>
+
+      <fieldset *ngIf="addresses().length" class="mb-3">
+        <legend class="visually-hidden">Delivery address</legend>
+        <div class="choices">
+          <label *ngFor="let address of addresses()" class="choice" [class.selected]="selectedAddress === address.id">
+            <input type="radio" class="form-check-input" name="address" [value]="address.id" [(ngModel)]="selectedAddress" />
+            <span>
+              <strong>{{ address.fullName }}</strong>
+              <span *ngIf="address.defaultAddress" class="badge text-bg-light ms-2">Default</span><br />
+              {{ address.street }}, {{ address.zipCode }} {{ address.city }}, {{ address.country }}<br />
+              <span class="text-secondary">{{ address.phone }}</span>
+            </span>
+          </label>
+          <label class="choice" [class.selected]="selectedAddress === 'new'">
+            <input type="radio" class="form-check-input" name="address" value="new" [(ngModel)]="selectedAddress" />
+            <span><strong>Use a different address</strong></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <form *ngIf="selectedAddress === 'new'" (ngSubmit)="confirmAddress()" novalidate>
+        <shop-address-form [form]="addressForm" prefix="checkout-"></shop-address-form>
+        <div class="form-check mt-3">
+          <input id="save-address" name="saveAddress" type="checkbox" class="form-check-input" [(ngModel)]="saveAddress" />
+          <label for="save-address" class="form-check-label">Save this address to my account for next time</label>
+        </div>
+        <button type="submit" class="visually-hidden">Continue</button>
+      </form>
+
+      <div class="step-actions">
+        <a routerLink="/cart" class="btn btn-outline-secondary">
+          <selling-icon name="arrow-left" [size]="16"></selling-icon> Back to cart
+        </a>
+        <button type="button" class="btn btn-primary btn-lg" (click)="confirmAddress()">
+          Continue to delivery <selling-icon name="arrow-right"></selling-icon>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="panel" *ngIf="step() === 2" aria-labelledby="step-2-title">
+      <h2 id="step-2-title" class="h4 mb-3" tabindex="-1" #stepTitle>Delivery and payment</h2>
+
+      <ng-container *ngIf="options() as options; else optionsLoading">
+        <fieldset class="mb-4">
+          <legend class="h6">How do you want to receive the order?</legend>
+          <div class="choices">
+            <label *ngFor="let option of options.deliveryMethods" class="choice" [class.selected]="delivery === option.code">
+              <input type="radio" class="form-check-input" name="delivery" [value]="option.code" [(ngModel)]="delivery" />
+              <span class="choice-text"><strong>{{ option.label }}</strong><br /><span class="text-secondary">{{ option.description }}</span></span>
+              <strong class="choice-price">{{ option.price | price }}</strong>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="h6">How do you want to pay?</legend>
+          <div class="choices">
+            <label *ngFor="let option of options.paymentMethods" class="choice" [class.selected]="payment === option.code">
+              <input type="radio" class="form-check-input" name="payment" [value]="option.code" [(ngModel)]="payment" />
+              <span class="choice-text"><strong>{{ option.label }}</strong><br /><span class="text-secondary">{{ option.description }}</span></span>
+              <strong class="choice-price">{{ option.price | price }}</strong>
+            </label>
+          </div>
+        </fieldset>
+      </ng-container>
+      <ng-template #optionsLoading><div class="skeleton options-skeleton"></div></ng-template>
+
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="goTo(1)">
+          <selling-icon name="arrow-left" [size]="16"></selling-icon> Back
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" [disabled]="!options()" (click)="goTo(3)">
+          Continue to summary <selling-icon name="arrow-right"></selling-icon>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 3 -->
+    <section class="panel" *ngIf="step() === 3" aria-labelledby="step-3-title">
+      <h2 id="step-3-title" class="h4 mb-3" tabindex="-1" #stepTitle>Check your order</h2>
+
+      <div class="review-grid">
+        <div class="review-block" *ngIf="shipping() as address">
+          <div class="review-block-header">
+            <h3>Delivery address</h3>
+            <button type="button" class="link-button" (click)="goTo(1)">Change</button>
+          </div>
+          {{ address.fullName }}<br />
+          {{ address.street }}<br />
+          {{ address.zipCode }} {{ address.city }}, {{ address.country }}<br />
+          {{ address.phone }}
+        </div>
+        <div class="review-block">
+          <div class="review-block-header">
+            <h3>Delivery and payment</h3>
+            <button type="button" class="link-button" (click)="goTo(2)">Change</button>
+          </div>
+          {{ deliveryOption()?.label }} – {{ deliveryOption()?.price | price }}<br />
+          {{ paymentOption()?.label }} – {{ paymentOption()?.price | price }}
+        </div>
+      </div>
+
+      <h3 class="h6 mt-4">Products</h3>
+      <ul class="review-items">
+        <li *ngFor="let item of cart.items()">
+          <span class="thumb">
+            <selling-product-image [name]="item.name" [imageUrl]="item.imageUrl" [icon]="item.categoryIcon"></selling-product-image>
+          </span>
+          <span class="flex-grow-1">{{ item.name }}<br /><span class="text-secondary">{{ item.quantity }} × {{ item.price | price }}</span></span>
+          <strong>{{ item.price * item.quantity | price }}</strong>
+        </li>
+      </ul>
+
+      <label for="note" class="form-label mt-3">Note for us <span class="text-secondary fw-normal">(optional)</span></label>
+      <textarea
+        id="note"
+        class="form-control"
+        rows="2"
+        maxlength="1000"
+        placeholder="e.g. Please call before delivery"
+        [(ngModel)]="note"
+      ></textarea>
+
+      <div *ngIf="error()" class="form-error mt-3" role="alert">
+        <selling-icon name="alert"></selling-icon>
+        <span>{{ error() }} <a *ngIf="stockProblem()" routerLink="/cart">Review your cart</a></span>
+      </div>
+
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="goTo(2)">
+          <selling-icon name="arrow-left" [size]="16"></selling-icon> Back
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" [disabled]="isSubmitting()" (click)="placeOrder()">
+          <span *ngIf="isSubmitting()" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          {{ isSubmitting() ? 'Placing the order...' : 'Place order and pay ' + (total() | price) }}
+        </button>
+      </div>
+      <p class="terms">By placing the order you agree to the terms and conditions of the shop.</p>
+    </section>
+  </div>
+
+  <aside class="panel checkout-summary" aria-label="Order summary">
+    <h2 class="h5 mb-3">Your order</h2>
+    <ul class="summary-items">
+      <li *ngFor="let item of cart.items()">
+        <span>{{ item.quantity }} × {{ item.name }}</span>
+        <span>{{ item.price * item.quantity | price }}</span>
+      </li>
+    </ul>
+    <div class="summary-row">
+      <span>Products</span>
+      <span>{{ cart.total() | price }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Delivery</span>
+      <span>{{ step() >= 2 && deliveryOption() ? (deliveryOption()?.price | price) : '–' }}</span>
+    </div>
+    <div class="summary-row" *ngIf="step() >= 2 && paymentOption()?.price">
+      <span>{{ paymentOption()?.label }}</span>
+      <span>{{ paymentOption()?.price | price }}</span>
+    </div>
+    <div class="summary-row summary-total">
+      <span>Total</span>
+      <span>{{ (step() >= 2 ? total() : cart.total()) | price }}</span>
+    </div>
+    <a routerLink="/cart" class="btn btn-link w-100 mt-2">Edit cart</a>
+  </aside>
+</div>
